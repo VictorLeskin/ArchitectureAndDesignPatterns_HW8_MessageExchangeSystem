@@ -1,0 +1,10 @@
+///************************* OUTS HOMEWORK ****************************************
+#ifndef ARCHITECTUREANDDESIGNPATTERNS_HW8_MESSAGEEXCHANGESYSTEM_HPP
+#define ARCHITECTUREANDDESIGNPATTERNS_HW8_MESSAGEEXCHANGESYSTEM_HPP
+
+class ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem
+{
+public:
+};
+
+#endif //#ifndef ARCHITECTUREANDDESIGNPATTERNS_HW8_MESSAGEEXCHANGESYSTEM_HPP
