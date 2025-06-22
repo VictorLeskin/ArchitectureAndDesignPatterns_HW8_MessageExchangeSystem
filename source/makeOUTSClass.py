@@ -1,7 +1,7 @@
 import sys
 import os
 import os.path
-
+import subprocess
 
 t = sys.argv[1]
 className = t
@@ -86,3 +86,7 @@ print( ''.join(cMakeListsFileLines) )
 
 with open(cMakeListsFileName, 'w') as cMakeListsFile:
     print( ''.join(cMakeListsFileLines), file = cMakeListsFile, end = '' )
+
+print( ' '.join(["git add", hFileName, cppFileName, gtestFileName ]) )
+result = subprocess.run(' '.join(["git add", hFileName, cppFileName, gtestFileName ]), shell=True )
+print(f"Files added to git with status: {result.returncode}")
