@@ -24,9 +24,12 @@ add_executable(
   source/ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp 
   source/aMessageBroker.hpp
   source/aMessageBroker.cpp
+  source/cMessage.hpp
+  source/cMessage.cpp
 #add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
   source/tests/test_aMessageBroker.cpp
+  source/tests/test_cMessage.cpp
 #add test file here
 )
 
