@@ -22,9 +22,9 @@ add_executable(
 
   source/ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.hpp 
   source/ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp 
-
+#add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
-
+#add test file here
 )
 
 target_include_directories(

@@ -11,6 +11,7 @@ define=t.upper() + '_HPP'
 hFileName =  className+'.hpp'
 cppFileName = className+'.cpp' 
 gtestFileName = 'tests/test_'+className+'.cpp'
+cMakeListsFileName = '../CMakeLists.txt'
 
 if os.path.isfile( hFileName ):
     print( 'file ' + hFileName + ' exist'  )
@@ -69,3 +70,19 @@ with open(gtestFileName, 'w') as source:
     f'  Test_{className} t;\n'
     f'}}\n')
     print( msg, file = source )
+
+
+cMakeListsFileLines = []
+with open(cMakeListsFileName, 'r') as cMakeListsFile:
+    for line in cMakeListsFile:
+        if line.startswith( '#add source file here' ):
+            cMakeListsFileLines.append( '  source/' +  hFileName + '\n')
+            cMakeListsFileLines.append( '  source/' +  cppFileName + '\n' )
+        if line.startswith( '#add test file here' ):
+            cMakeListsFileLines.append( '  source/' +  gtestFileName + '\n' )
+        cMakeListsFileLines.append(line)
+
+print( ''.join(cMakeListsFileLines) )
+
+with open(cMakeListsFileName, 'w') as cMakeListsFile:
+    print( ''.join(cMakeListsFileLines), file = cMakeListsFile, end = '' )
