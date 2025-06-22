@@ -1,4 +1,54 @@
 ///************************* OUTS HOMEWORK ****************************************
 
 #include "cMessage.hpp"
+#include "nlohmann/json.hpp"
+
+cMessage cMessage::Create(cGameId& gameId, cOjectId& objId, cOperationId& operationId, cOperationParameters& operationParameters)
+{
+    using json = nlohmann::json;
+
+    // Serialize to JSON
+    json j;
+    j["gameId"] = gameId.id;
+    j["objId"] = objId.id;
+    j["operationId"] = operationId.id;
+    j["operationParmeters"] = operationParameters;
+
+	return cMessage();
+}
+
+void to_json(nlohmann::json& j, const cOperationParameters& operationParameters)
+{
+    j = nlohmann::json
+    {
+        { "type", operationParameters.type },
+        { "dir", operationParameters.dir },
+        { "pos", operationParameters.pos }
+    };
+}
+
+
+void from_json(const nlohmann::json& j, cOperationParameters& operationParameters)
+{
+    j.at("type").get_to(operationParameters.type);
+    j.at("dir").get_to(operationParameters.dir);
+    j.at("pos").get_to(operationParameters.pos);
+}
+
+
+void to_json(nlohmann::json& j, const cVector& v)
+{
+    j = nlohmann::json
+    {
+        { "x", v.x },
+        { "y", v.y }
+    };
+}
+
+
+void from_json(const nlohmann::json& j, cVector& v)
+{
+    j.at("x").get_to(v.x);
+    j.at("y").get_to(v.y);
+}
 
