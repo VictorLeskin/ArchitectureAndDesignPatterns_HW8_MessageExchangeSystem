@@ -14,7 +14,7 @@ cMessage cMessage::Create(cGameId& gameId, cOjectId& objId, cOperationId& operat
     j["operationId"] = operationId.id;
     j["operationParmeters"] = operationParameters;
 
-	return cMessage();
+	return cMessage( j.dump());
 }
 
 void to_json(nlohmann::json& j, const cOperationParameters& operationParameters)
@@ -22,7 +22,6 @@ void to_json(nlohmann::json& j, const cOperationParameters& operationParameters)
     j = nlohmann::json
     {
         { "type", operationParameters.type },
-        { "dir", operationParameters.dir },
         { "pos", operationParameters.pos }
     };
 }
@@ -31,7 +30,6 @@ void to_json(nlohmann::json& j, const cOperationParameters& operationParameters)
 void from_json(const nlohmann::json& j, cOperationParameters& operationParameters)
 {
     j.at("type").get_to(operationParameters.type);
-    j.at("dir").get_to(operationParameters.dir);
     j.at("pos").get_to(operationParameters.pos);
 }
 

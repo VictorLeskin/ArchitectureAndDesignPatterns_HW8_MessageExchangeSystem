@@ -1,8 +1,9 @@
-///************************* OUTS HOMEWORK ****************************************
+  ///************************* OUTS HOMEWORK ****************************************
 
 #include <gtest/gtest.h>
 
 #include "ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.hpp"
+#include "cMessage.hpp"
 
 #include <iostream>
 #include <nlohmann/json.hpp>

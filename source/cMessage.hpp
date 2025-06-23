@@ -14,7 +14,6 @@ class cOperationId { public: std::string id; };
 struct cOperationParameters
 {
 	int type;
-	double dir;
 	cVector pos;
 };
 
@@ -26,10 +25,14 @@ void from_json(const nlohmann::json& j, cVector &name);
 class cMessage
 {
 public:
+	cMessage(std::string str_) : str_(str_) {}
+
 	static cMessage Create(cGameId &gameId, cOjectId &objId, cOperationId &id, cOperationParameters& operationParameters);
 
+	const std::string& str() const { return str_; }
+
 protected:
-	std::string str;
+	std::string str_;
 };
 
 #endif //#ifndef CMESSAGE_HPP
