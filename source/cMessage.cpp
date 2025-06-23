@@ -1,21 +1,7 @@
 ///************************* OUTS HOMEWORK ****************************************
 
 #include "cMessage.hpp"
-#include "nlohmann/json.hpp"
 
-cMessage cMessage::Create(cGameId& gameId, cOjectId& objId, cOperationId& operationId, cOperationParameters& operationParameters)
-{
-    using json = nlohmann::json;
-
-    // Serialize to JSON
-    json j;
-    j["gameId"] = gameId.id;
-    j["objId"] = objId.id;
-    j["operationId"] = operationId.id;
-    j["operationParmeters"] = operationParameters;
-
-	return cMessage( j.dump());
-}
 
 void to_json(nlohmann::json& j, const cOperationParameters& operationParameters)
 {

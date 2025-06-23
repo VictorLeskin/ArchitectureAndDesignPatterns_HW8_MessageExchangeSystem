@@ -4,8 +4,7 @@
 
 #include <string>
 #include "cvector.hpp"
-#include "nlohmann/json_fwd.hpp"
-
+#include "nlohmann/json.hpp"
 
 class cGameId { public: std::string id; };
 class cOjectId { public: std::string id; };
@@ -27,12 +26,31 @@ class cMessage
 public:
 	cMessage(std::string str_) : str_(str_) {}
 
-	static cMessage Create(cGameId &gameId, cOjectId &objId, cOperationId &id, cOperationParameters& operationParameters);
+	template<typename OPERATION_PARAMETERS>
+	static cMessage Create(const cGameId& gameId, const cOjectId& objId, const cOperationId& operationId,
+		const OPERATION_PARAMETERS& operationParameters);
 
 	const std::string& str() const { return str_; }
 
 protected:
 	std::string str_;
 };
+
+template<typename OPERATION_PARAMETERS>
+inline cMessage cMessage::Create(const cGameId& gameId, const cOjectId& objId, const cOperationId& operationId,
+	const OPERATION_PARAMETERS& operationParameters)
+{
+	using json = nlohmann::json;
+
+	// Serialize to JSON
+	json j;
+	j["gameId"] = gameId.id;
+	j["objId"] = objId.id;
+	j["operationId"] = operationId.id;
+	j["operationParmeters"] = operationParameters;
+
+	return cMessage(j.dump());
+}
+
 
 #endif //#ifndef CMESSAGE_HPP
