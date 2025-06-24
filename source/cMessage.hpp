@@ -39,12 +39,6 @@ public:
 	OPERATION_PARAMETERS operationParameters;
 };
 
-struct cOperationParameters
-{
-	int type;
-	cVector pos;
-};
-
 template<typename OPERATION_PARAMETERS>
 void to_json(nlohmann::json& j, const TGameOperation<OPERATION_PARAMETERS>& operation )
 {

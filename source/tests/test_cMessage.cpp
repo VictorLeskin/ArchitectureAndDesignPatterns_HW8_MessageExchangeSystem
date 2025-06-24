@@ -16,15 +16,61 @@ public:
     Test_cMessage(const cMessage& m) : cMessage(m) {}
     using cMessage::cMessage; // delegate constructors
   };
+
+  struct Test_cOperationParameters : public cOperationParameters
+  {
+    Test_cOperationParameters() {}
+    Test_cOperationParameters(int type, cVector pos) : type(type), pos(pos) {}
+
+    int type;
+    cVector pos;
+  };
+
+
 };
+
+void to_json(nlohmann::json& j, const test_cMessage::Test_cOperationParameters& operationParameters)
+{
+  j = nlohmann::json
+  {
+      { "type", operationParameters.type },
+      { "pos", operationParameters.pos }
+  };
+}
+
+
+void from_json(const nlohmann::json& j, test_cMessage::Test_cOperationParameters& operationParameters)
+{
+  j.at("type").get_to(operationParameters.type);
+  j.at("pos").get_to(operationParameters.pos);
+}
+
+
+void to_json(nlohmann::json& j, const cVector& v)
+{
+  j = nlohmann::json
+  {
+      { "x", v.x },
+      { "y", v.y }
+  };
+}
+
+
+void from_json(const nlohmann::json& j, cVector& v)
+{
+  j.at("x").get_to(v.x);
+  j.at("y").get_to(v.y);
+}
+
+
 
 TEST_F(test_cMessage, test_to_msg )
 {
-  TGameOperation<cOperationParameters> k;
+  TGameOperation<Test_cOperationParameters> k;
   k.gameId = cGameId{ "gameId" };
   k.objId = cOjectId{ "ojectId" };
   k.operationId = cOperationId{ "operationId" };
-  k.operationParameters = cOperationParameters{ 22, cVector(303,404) };
+  k.operationParameters = Test_cOperationParameters{ 22, cVector(303,404) };
 
   Test_cMessage t("");
   cMessage::to_msg( t, k );
@@ -37,7 +83,7 @@ TEST_F(test_cMessage, test_from_msg)
   std::string res = R""""({"gameId":"gameId","objId":"ojectId","operationId":"operationId","operationParmeters":{"pos":{"x":303.0,"y":404.0},"type":22}})"""";
   cMessage t(res);
 
-  TGameOperation<cOperationParameters> k;
+  TGameOperation<Test_cOperationParameters> k;
   cMessage::from_msg(t, k);
 
   EXPECT_EQ(std::string("gameId"), k.gameId.id);
