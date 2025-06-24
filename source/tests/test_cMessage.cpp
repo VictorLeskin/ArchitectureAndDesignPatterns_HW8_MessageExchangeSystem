@@ -16,21 +16,34 @@ public:
     Test_cMessage(const cMessage& m) : cMessage(m) {}
     using cMessage::cMessage; // delegate constructors
   };
-
 };
 
-
-
-TEST_F(test_cMessage, test_Create)
+TEST_F(test_cMessage, test_to_msg )
 {
-  cGameId gameId{ "gameId" };
-  cOjectId ojectId{ "ojectId" };
-  cOperationId operationId{ "operationId" };
+  TGameOperation<cOperationParameters> k;
+  k.gameId = cGameId{ "gameId" };
+  k.objId = cOjectId{ "ojectId" };
+  k.operationId = cOperationId{ "operationId" };
+  k.operationParameters = cOperationParameters{ 22, cVector(303,404) };
 
-  cOperationParameters opParameter{ 22, cVector(303,404) };
-
-  Test_cMessage t = cMessage::Create(gameId, ojectId, operationId, opParameter );
+  Test_cMessage t("");
+  cMessage::to_msg( t, k );
   std::string res = R""""({"gameId":"gameId","objId":"ojectId","operationId":"operationId","operationParmeters":{"pos":{"x":303.0,"y":404.0},"type":22}})"""";
-  EXPECT_EQ(res, t.str() );
+  EXPECT_EQ(res, t.str());
 }
 
+TEST_F(test_cMessage, test_from_msg)
+{
+  std::string res = R""""({"gameId":"gameId","objId":"ojectId","operationId":"operationId","operationParmeters":{"pos":{"x":303.0,"y":404.0},"type":22}})"""";
+  cMessage t(res);
+
+  TGameOperation<cOperationParameters> k;
+  cMessage::from_msg(t, k);
+
+  EXPECT_EQ(std::string("gameId"), k.gameId.id);
+  EXPECT_EQ(std::string("ojectId"), k.objId.id);
+  EXPECT_EQ(std::string("operationId"), k.operationId.id);
+  EXPECT_EQ(22, k.operationParameters.type);
+  EXPECT_EQ(303, k.operationParameters.pos.x );
+  EXPECT_EQ(404, k.operationParameters.pos.y);
+}

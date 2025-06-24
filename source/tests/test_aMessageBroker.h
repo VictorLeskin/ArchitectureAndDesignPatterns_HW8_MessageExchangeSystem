@@ -15,7 +15,6 @@ public:
   // additional class to access to member of tested class
   class Test_aMessageBroker : public aMessageBroker
   {
-
   public:
     std::optional<cMessage> msg;
 

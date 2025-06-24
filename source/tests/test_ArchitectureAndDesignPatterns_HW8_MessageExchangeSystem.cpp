@@ -4,6 +4,7 @@
 
 #include "ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.hpp"
 #include "cMessage.hpp"
+#include "test_aMessageBroker.h"
 
 #include <iostream>
 #include <nlohmann/json.hpp>
@@ -27,12 +28,37 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor )
   Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
 }
 
-
-// for convenience
-using json = nlohmann::json;
-
-TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_cCreatingJSONObject)
+class cEndPoint
 {
+public:
+  std::unique_ptr<cGameOperation> Parse(const cMessage m);
+
+};
+TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_EndpointCommonBehaviour )
+{
+  // create message broker.
+  test_aMessageBroker::Test_aMessageBroker broker;
+  cEndPoint endPoint;
+
+  cMessage m;
+  while (true == broker.get(m))
+  {
+    std::unique_ptr<cGameOperation> cmd = endPoint.Parse(m);
+
+    cObject *game = IoC.Resolve("Game", cmd->gameId.id );
+    cObject *obj  = IoC.Resolve("Object", cmd->gameId.id, cmd->objId.id);
+
+
+    //
+
+
+
+  }
+
+
+  //
+
+
     // Create a JSON object
     json j;
     j["name"] = "John Doe";
