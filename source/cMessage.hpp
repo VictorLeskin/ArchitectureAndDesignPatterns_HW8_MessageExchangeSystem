@@ -13,6 +13,34 @@ class cOperationParameters // base class of all types of operation parameters
 {
 };
 
+class cMsgHeader
+{
+public:
+	cMsgHeader() : pOperationParameters(nullptr) {}
+
+public:
+	virtual ~cMsgHeader() = default;
+
+	cGameId gameId;
+	cOjectId objId;
+	cOperationId operationId;
+	cOperationParameters* pOperationParameters;
+};
+
+void to_json(nlohmann::json& j, const cMsgHeader& h)
+{
+	j["gameId"] = h.gameId.id;
+	j["objId"] = h.objId.id;
+	j["operationId"] = h.operationId.id;
+}
+
+void from_json(const nlohmann::json& j, cMsgHeader& h)
+{
+	j.at("gameId").get_to(h.gameId.id);
+	j.at("objId").get_to(h.objId.id);
+	j.at("operationId").get_to(h.operationId.id);
+}
+
 class cGameOperation
 {
 public:
@@ -84,8 +112,11 @@ public:
 	}
 
 	const std::string& str() const { return str_; }
+	const std::string Header() const { return header; }
 
 protected:
+	std::string header;
+	std::string operationParameters;
 	std::string str_;
 };
 

@@ -4,6 +4,7 @@
 
 #include "ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.hpp"
 #include "cMessage.hpp"
+#include "cEndPoint.hpp"
 #include "test_aMessageBroker.h"
 
 #include <iostream>
@@ -28,38 +29,64 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor )
   Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
 }
 
-class cObject
+class iCommand
 {
-
+public:
 };
 
-class cEndPoint
+class cGame
+{
+public:
+  void push_back(std::shared_ptr<iCommand>&);
+};
+
+class cObject
 {
 public:
 
-  std::unique_ptr<cGameOperation> Parse(const cMessage m) { return nullptr;  }
+};
+
+class cInterpretCommand
+{
+public:
+  cGame* Game() const
+  {
+    throw(std::exception("Not implemented"));
+    return nullptr;
+  }
+  std::shared_ptr<iCommand>& Command() const
+  {
+    throw(std::exception("Not implemented"));
+    return std::shared_ptr<iCommand>();
+  }
 };
 
 class cIoC
 {
 public:
-  cObject* Resolve(const char* sz, const std::string & id) { return nullptr; }
+  cObject* Resolve(const char* sz, const std::string& id) { return nullptr; }
   cObject* Resolve(const char* sz, const std::string& gameId, const std::string& id) { return nullptr; }
-
 };
+
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_EndpointCommonBehaviour )
 {
   // create message broker.
   test_aMessageBroker::Test_aMessageBroker broker;
-  cEndPoint endPoint;
   cIoC IoC;
+  cEndPoint endPoint;
+
+  endPoint.set(IoC);
+
 
   cMessage m;
   while (true == broker.get(m))
   {
-    std::unique_ptr<cGameOperation> cmd = endPoint.Parse(m);
-
-    cObject *game = IoC.Resolve("Game", cmd->gameId.id );
-    cObject *obj  = IoC.Resolve("Object", cmd->gameId.id, cmd->objId.id);
+    std::shared_ptr<cInterpretCommand> cmd = endPoint.parse(m);
+    cmd->Game()->push_back(cmd->Command());
   }
+}
+
+void cGame::push_back(std::shared_ptr<iCommand>&)
+{
+  throw(std::exception("Not implemented"));
 }

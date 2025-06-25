@@ -26,10 +26,13 @@ add_executable(
   source/aMessageBroker.cpp
   source/cMessage.hpp
   source/cMessage.cpp
+  source/cEndPoint.hpp
+  source/cEndPoint.cpp
 #add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
   source/tests/test_aMessageBroker.cpp
   source/tests/test_cMessage.cpp
+  source/tests/test_cEndPoint.cpp
 #add test file here
 )
 
