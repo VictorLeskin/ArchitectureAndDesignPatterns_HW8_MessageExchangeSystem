@@ -3,6 +3,7 @@
 #include "cEndPoint.hpp"
 #include "cMessage.hpp"
 #include "nlohmann/json.hpp"
+#include "cIoC.hpp"
 
 std::shared_ptr<cInterpretCommand> cEndPoint::parse(const cMessage& msg)
 {
@@ -11,6 +12,8 @@ std::shared_ptr<cInterpretCommand> cEndPoint::parse(const cMessage& msg)
   nlohmann::json j = nlohmann::json::parse(msg.Header());
   from_json(j, h);
 
-  //ioc.Resolve("Game",h.gameId.id);
-  //ioc.Resolve("Object", h.gameId.id);
+  ioc->Resolve<iCommand>("Game",h.gameId.id);
+  ioc->Resolve<iCommand>("Object", h.gameId.id);
+
+  return nullptr;
 }

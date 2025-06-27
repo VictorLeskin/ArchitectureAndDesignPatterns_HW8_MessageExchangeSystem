@@ -28,11 +28,14 @@ add_executable(
   source/cMessage.cpp
   source/cEndPoint.hpp
   source/cEndPoint.cpp
+  source/cIoC.hpp
+  source/cIoC.cpp
 #add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
   source/tests/test_aMessageBroker.cpp
   source/tests/test_cMessage.cpp
   source/tests/test_cEndPoint.cpp
+  source/tests/test_cIoC.cpp
 #add test file here
 )
 

@@ -27,14 +27,14 @@ public:
 	cOperationParameters* pOperationParameters;
 };
 
-void to_json(nlohmann::json& j, const cMsgHeader& h)
+inline void to_json(nlohmann::json& j, const cMsgHeader& h)
 {
 	j["gameId"] = h.gameId.id;
 	j["objId"] = h.objId.id;
 	j["operationId"] = h.operationId.id;
 }
 
-void from_json(const nlohmann::json& j, cMsgHeader& h)
+inline void from_json(const nlohmann::json& j, cMsgHeader& h)
 {
 	j.at("gameId").get_to(h.gameId.id);
 	j.at("objId").get_to(h.objId.id);
@@ -68,7 +68,7 @@ public:
 };
 
 template<typename OPERATION_PARAMETERS>
-void to_json(nlohmann::json& j, const TGameOperation<OPERATION_PARAMETERS>& operation )
+inline void to_json(nlohmann::json& j, const TGameOperation<OPERATION_PARAMETERS>& operation )
 {
 	j["gameId"] = operation.gameId.id;
 	j["objId"] = operation.objId.id;
@@ -77,7 +77,7 @@ void to_json(nlohmann::json& j, const TGameOperation<OPERATION_PARAMETERS>& oper
 }
 
 template<typename OPERATION_PARAMETERS>
-void from_json(const nlohmann::json& j, TGameOperation<OPERATION_PARAMETERS>& operation)
+inline void from_json(const nlohmann::json& j, TGameOperation<OPERATION_PARAMETERS>& operation)
 {
 	j.at("gameId").get_to(operation.gameId.id);
 	j.at("objId").get_to(operation.objId.id);
