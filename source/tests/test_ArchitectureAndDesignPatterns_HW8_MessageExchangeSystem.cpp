@@ -86,7 +86,7 @@ public:
 		throw(cException("Not implemented"));
 		return nullptr;
 	}
-	std::shared_ptr<iCommand>& Command() const
+	std::shared_ptr<iCommand> Command() const
 	{
 		throw(cException("Not implemented"));
 		return std::shared_ptr<iCommand>();
