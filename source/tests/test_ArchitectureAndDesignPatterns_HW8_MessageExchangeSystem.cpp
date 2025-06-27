@@ -83,12 +83,12 @@ class cInterpretCommand : public iCommand
 public:
 	cGame* Game() const
 	{
-		throw(std::exception("Not implemented"));
+		throw(cException("Not implemented"));
 		return nullptr;
 	}
 	std::shared_ptr<iCommand>& Command() const
 	{
-		throw(std::exception("Not implemented"));
+		throw(cException("Not implemented"));
 		return std::shared_ptr<iCommand>();
 	}
 };
@@ -142,5 +142,5 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 
 void cGame::push_back(std::shared_ptr<iCommand>&)
 {
-	throw(std::exception("Not implemented"));
+	throw(cException("Not implemented"));
 }
