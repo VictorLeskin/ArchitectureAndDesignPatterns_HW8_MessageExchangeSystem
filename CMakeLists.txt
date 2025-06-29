@@ -30,12 +30,42 @@ add_executable(
   source/cEndPoint.cpp
   source/cIoC.hpp
   source/cIoC.cpp
+  source/iCommand.hpp
+  source/iCommand.cpp
+  source/cCommandsDeque.hpp
+  source/cCommandsDeque.cpp
+  source/cThreadSafeDeque.hpp
+  source/cThreadSafeDeque.cpp
+  source/cMessagesDeque.hpp
+  source/cMessagesDeque.cpp
+  source/cGame.hpp
+  source/cGame.cpp
+  source/cGameId.hpp
+  source/cGameId.cpp
+  source/cObject.hpp
+  source/cObject.cpp
+  source/cJsonString.hpp
+  source/cJsonString.cpp
+  source/cInterpretCommand.hpp
+  source/cInterpretCommand.cpp
+  source/cException.hpp
+  source/cException.cpp
 #add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
   source/tests/test_aMessageBroker.cpp
   source/tests/test_cMessage.cpp
   source/tests/test_cEndPoint.cpp
   source/tests/test_cIoC.cpp
+  source/tests/test_cCommandsDeque.cpp
+  source/tests/test_iCommand.cpp
+  source/tests/test_cThreadSafeDeque.cpp
+  source/tests/test_cMessagesDeque.cpp
+  source/tests/test_cGame.cpp
+  source/tests/test_cGameId.cpp
+  source/tests/test_cObject.cpp
+  source/tests/test_cJsonString.cpp
+  source/tests/test_cInterpretCommand.cpp
+  source/tests/test_cException.cpp
 #add test file here
 )
 

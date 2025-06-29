@@ -6,10 +6,15 @@
 #include "cMessage.hpp"
 #include "cEndPoint.hpp"
 #include "cIoC.hpp"
-#include "test_aMessageBroker.h"
+#include "cMessagesDeque.hpp"
+#include "cGame.hpp"
+#include "cInterpretCommand.hpp"
 
 #include <iostream>
 #include <nlohmann/json.hpp>
+#include <tuple>
+
+#include "test_aMessageBroker.h"
 
 // gTest grouping class
 class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem : public ::testing::Test
@@ -25,8 +30,6 @@ public:
 
 	// additional class to access to member of tested class
 	class Test_cFactory;
-
-
 };
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
@@ -34,18 +37,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
 	Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
 }
 
-class cObject
-{
-public:
-	cObject(std::string id) : id(id) {}
-
-	virtual ~cObject() {}
-
-	const std::string& Id() const { return id; }
-
-protected:
-	std::string id;
-};
 
 
 class cSpaceShip : public cObject
@@ -54,15 +45,6 @@ public:
 	cSpaceShip(std::string id) : cObject(id) {}
 };
 
-class cGame : public cObject
-{
-public:
-	cGame(std::string id) : cObject(id) {}
-
-	void Register(cSpaceShip* spaceShip1) {}
-
-	void push_back(std::shared_ptr<iCommand>&);
-};
 
 class cJsonString;
 
@@ -78,21 +60,29 @@ public:
 	}
 };
 
-class cInterpretCommand : public iCommand
-{
-public:
-	cGame* Game() const
-	{
-		throw(cException("Not implemented"));
-		return nullptr;
-	}
-	std::shared_ptr<iCommand> Command() const
-	{
-		throw(cException("Not implemented"));
-		return std::shared_ptr<iCommand>();
-	}
-};
 
+TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMessage)
+{
+	using operation_parameters = std::tuple< int, cVector >;
+	operation_parameters p{321,cVector(456,78)};
+	TGameOperation<operation_parameters> op;
+
+	op.gameId.id = "Game #1";
+	op.objId.id = "Spaceship #1";
+	op.operationId.id = "moveTo";
+	op.operationParameters = p;
+
+	cMessage msg = cMessage::Create(op);
+	cMessagesDeque deq;
+
+	deq.push_back(msg);
+
+	EXPECT_EQ(1, deq.size());
+
+	cMessage msg1;
+	EXPECT_TRUE( deq.pop_front(msg1) );
+	EXPECT_EQ(0, deq.size());
+}
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_EndpointCommonBehaviour)
 {
@@ -118,9 +108,11 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
 	
 
-
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
 	cGame* game2 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #2"));
+
+	endPoint.Register(game1);
+	endPoint.Register(game2);
 
 	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1 "));
 	cSpaceShip* spaceShip2 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #2 "));

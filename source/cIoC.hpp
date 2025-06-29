@@ -6,7 +6,9 @@
 #include <memory>
 #include <functional>
 #include <map>
-#include <stdexcept>
+
+#include "iCommand.hpp"
+#include "cException.hpp"
 
 // cIoCImpl-container
 // with only entry
@@ -20,28 +22,6 @@
 
 class cIoCImpl;
 class cFactory;
-
-// interface class of command
-class iCommand
-{
-public:
-    virtual ~iCommand() = default;
-
-    virtual void Execute() = 0;
-    virtual const char* Type() = 0;
-};
-
-// base class of exception used in task. Just keep a text of a event.
-class cException : public std::exception
-{
-public:
-    cException(const char* sz) : szWhat(sz) {}
-
-    const char* what() const noexcept { return szWhat; }
-
-protected:
-    const char* szWhat;
-};
 
 struct iRegisterFactory : public iCommand
 {

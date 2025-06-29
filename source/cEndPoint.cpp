@@ -4,16 +4,30 @@
 #include "cMessage.hpp"
 #include "nlohmann/json.hpp"
 #include "cIoC.hpp"
+#include "cGame.hpp"
+#include "cJsonString.hpp"
+#include "cInterpretCommand.hpp"
+
+void cEndPoint::Register(cGame* game)
+{
+	games[game->Id()] = game;
+}
 
 std::shared_ptr<cInterpretCommand> cEndPoint::parse(const cMessage& msg)
 {
+  // get game 
   cMsgHeader h;
-
-  nlohmann::json j = nlohmann::json::parse(msg.Header());
+  nlohmann::json j = nlohmann::json::parse(msg.str());
   from_json(j, h);
 
-  ioc->Resolve<iCommand>("Game",h.gameId.id);
-  ioc->Resolve<iCommand>("Object", h.gameId.id);
+  cGame* game = games[h.gameId.id];
+
+  // create command
+  cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", msg);
+  std::shared_ptr<iCommand> cmd(pcmd);
+  
+  // push command to game's command deque
+  game->push_back(cmd);
 
   return nullptr;
 }

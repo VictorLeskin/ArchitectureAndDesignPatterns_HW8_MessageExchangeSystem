@@ -6,17 +6,15 @@
 #include "cvector.hpp"
 #include "nlohmann/json.hpp"
 
-class cGameId { public: std::string id; };
+#include "cGameId.hpp"
+
 class cOjectId { public: std::string id; };
 class cOperationId { public: std::string id; };
-class cOperationParameters // base class of all types of operation parameters
-{
-};
 
 class cMsgHeader
 {
 public:
-	cMsgHeader() : pOperationParameters(nullptr) {}
+	cMsgHeader() {}
 
 public:
 	virtual ~cMsgHeader() = default;
@@ -24,27 +22,13 @@ public:
 	cGameId gameId;
 	cOjectId objId;
 	cOperationId operationId;
-	cOperationParameters* pOperationParameters;
+
 };
-
-inline void to_json(nlohmann::json& j, const cMsgHeader& h)
-{
-	j["gameId"] = h.gameId.id;
-	j["objId"] = h.objId.id;
-	j["operationId"] = h.operationId.id;
-}
-
-inline void from_json(const nlohmann::json& j, cMsgHeader& h)
-{
-	j.at("gameId").get_to(h.gameId.id);
-	j.at("objId").get_to(h.objId.id);
-	j.at("operationId").get_to(h.operationId.id);
-}
 
 class cGameOperation
 {
 public:
-	cGameOperation() : pOperationParameters(nullptr) {}
+	cGameOperation() {}
 
 public:
 	virtual ~cGameOperation() = default;
@@ -52,7 +36,6 @@ public:
 	cGameId gameId;
 	cOjectId objId;
 	cOperationId operationId;
-	cOperationParameters* pOperationParameters;
 };
 
 
@@ -62,7 +45,6 @@ class TGameOperation : public cGameOperation
 public:
 	TGameOperation()
 	{
-		pOperationParameters = &operationParameters;
 	}
 	OPERATION_PARAMETERS operationParameters;
 };
@@ -85,10 +67,21 @@ inline void from_json(const nlohmann::json& j, TGameOperation<OPERATION_PARAMETE
 	j.at("operationParmeters").get_to(operation.operationParameters);
 }
 
-void to_json(nlohmann::json& j, const cOperationParameters& operationParameters);
-void from_json(const nlohmann::json& j, cOperationParameters& operationParameters);
 void to_json(nlohmann::json& j, const cVector & name);
 void from_json(const nlohmann::json& j, cVector &name);
+inline void to_json(nlohmann::json& j, const cMsgHeader& h)
+{
+	j["gameId"] = h.gameId.id;
+	j["objId"] = h.objId.id;
+	j["operationId"] = h.operationId.id;
+}
+
+inline void from_json(const nlohmann::json& j, cMsgHeader& h)
+{
+	j.at("gameId").get_to(h.gameId.id);
+	j.at("objId").get_to(h.objId.id);
+	j.at("operationId").get_to(h.operationId.id);
+}
 
 class cMessage
 {
@@ -96,29 +89,36 @@ public:
 	cMessage() {}
 	cMessage(std::string str_) : str_(str_) {}
 
-	template<typename OPERATION_PARAMETERS>
-	static void to_msg(cMessage& msg, const OPERATION_PARAMETERS& operation )
-	{
-		nlohmann::json j;
-		to_json(j, operation);
-		msg = cMessage(j.dump());
-	}
 
-	template<typename OPERATION_PARAMETERS>
-	static void from_msg(const cMessage& msg, OPERATION_PARAMETERS& operation)
+	template<typename T_GAME_OPERATION>
+	static cMessage Create(const T_GAME_OPERATION& operation)
 	{
-		nlohmann::json j = nlohmann::json::parse(msg.str_);
-		from_json(j, operation);
+		cMessage msg;
+
+		cMsgHeader header; 
+		header.gameId = operation.gameId;
+		header.objId = operation.objId;
+		header.operationId = operation.operationId;
+
+		nlohmann::json jHeader;
+		to_json(jHeader, header);
+		std::string sHeader = jHeader.dump();
+
+		nlohmann::json jParameters;
+		to_json(jParameters, operation.operationParameters);
+		std::string sParameters = jParameters.dump();
+
+		msg.str_ = sHeader + sParameters;
+
+		return msg;
 	}
 
 	const std::string& str() const { return str_; }
-	const std::string Header() const { return header; }
+
+	std::string OperationParameters() const;
 
 protected:
-	std::string header;
-	std::string operationParameters;
 	std::string str_;
 };
-
 
 #endif //#ifndef CMESSAGE_HPP
