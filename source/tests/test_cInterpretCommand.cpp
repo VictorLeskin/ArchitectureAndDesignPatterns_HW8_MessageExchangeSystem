@@ -24,6 +24,6 @@ public:
  
 TEST_F(test_cInterpretCommand, test_ctor )
 {
-  Test_cInterpretCommand t;
+  Test_cInterpretCommand t("","",nullptr);
 }
 

@@ -13,6 +13,7 @@
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <tuple>
+#include <memory>
 
 #include "test_aMessageBroker.h"
 
@@ -47,6 +48,11 @@ public:
 
 
 class cJsonString;
+class cOperationData 
+{
+public:
+	virtual void from_json(const char* sz) = 0;
+};
 
 // additional class to access to member of tested class
 class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem::Test_cFactory : public cFactory
@@ -54,9 +60,23 @@ class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem::Test_cFactor
 public:
 	static cGame* createGame( std::string id ) { return new cGame(id); }
 	static cSpaceShip* createSpaceShip(std::string id) { return new cSpaceShip(id); }
-	static cSpaceShip* createInterpretCommand( std::string gameId, std::string objectId, std::string operation, const cJsonString& operationParameters) 
+	static cOperationData* createSerializeObj(const std::string& objId, const std::string& operationId)
+	{
+		throw(cException("not implemented"));
+	}
+	static cVector* createInterpretCommand_moveTo() { return new cVector; }
+	static cInterpretCommand* createInterpretCommand(const cMessage& msg)
 	{ 
-		return nullptr;
+		// get game 
+		cMsgHeader h;
+		std::istringstream strm(msg.str());
+		nlohmann::json j = nlohmann::json::parse(strm);
+		from_json(j, h);
+
+		cOperationData *p = createSerializeObj(h.objId.id, h.operationId.id);
+		p->from_json(msg.str().c_str() + strm.tellg());
+
+		return new cInterpretCommand(h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
 	}
 };
 
@@ -95,6 +115,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 
 	f1.Register("cGame", Test_cFactory::createGame );
 	f1.Register("cSpaceShip", Test_cFactory::createSpaceShip);
+	f1.Register("cInterpretCommand.moveTo", Test_cFactory::createInterpretCommand_moveTo );
 
 	// registering 
 	const cFactory& f11 = f1;
@@ -107,6 +128,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	IoC.Resolve<iCommand>("Register", "A", "cSpaceShip", Test_cFactory::createSpaceShip)->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
 	
+	
 
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
 	cGame* game2 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #2"));
@@ -118,6 +140,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cSpaceShip* spaceShip2 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #2 "));
 	cSpaceShip* spaceShip3 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #3 "));
 	cSpaceShip* spaceShip4 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #4 "));
+
 
 	game1->Register(spaceShip1);
 	game1->Register(spaceShip2);

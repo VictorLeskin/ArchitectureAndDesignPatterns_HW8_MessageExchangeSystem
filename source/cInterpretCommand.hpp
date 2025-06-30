@@ -6,14 +6,16 @@
 #include "cException.hpp"
 #include <memory>
 
+class cOperationData;
+
 class cInterpretCommand : public iCommand
 {
 public:
-	std::shared_ptr<iCommand> Command() const
-	{
-		throw(cException("Not implemented"));
-		return std::shared_ptr<iCommand>();
-	}
+	cInterpretCommand(const std::string &objId, const std::string &operationId, const std::shared_ptr<cOperationData> &operationData );
+
+	virtual void Execute() { throw(cException("not implemented")); }
+	virtual const char* Type() { throw(cException("not implemented")); }
+
 };
 
 

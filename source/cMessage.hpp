@@ -89,7 +89,6 @@ public:
 	cMessage() {}
 	cMessage(std::string str_) : str_(str_) {}
 
-
 	template<typename T_GAME_OPERATION>
 	static cMessage Create(const T_GAME_OPERATION& operation)
 	{
