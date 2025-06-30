@@ -14,7 +14,7 @@ class cGame;
 class cEndPoint
 {
 public:
-	std::shared_ptr<cInterpretCommand> parse(const cMessage& m);
+	void process(const cMessage& m);
 	void set(cIoC& IoC) { ioc = &IoC; }
 
 	void Register(cGame* game);

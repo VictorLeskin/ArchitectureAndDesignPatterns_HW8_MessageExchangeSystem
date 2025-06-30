@@ -13,7 +13,7 @@ void cEndPoint::Register(cGame* game)
 	games[game->Id()] = game;
 }
 
-std::shared_ptr<cInterpretCommand> cEndPoint::parse(const cMessage& msg)
+void cEndPoint::process(const cMessage& msg)
 {
   // get game 
   cMsgHeader h;
@@ -28,6 +28,4 @@ std::shared_ptr<cInterpretCommand> cEndPoint::parse(const cMessage& msg)
   
   // push command to game's command deque
   game->push_back(cmd);
-
-  return nullptr;
 }

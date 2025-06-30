@@ -54,6 +54,30 @@ public:
 	virtual void from_json(const char* sz) = 0;
 };
 
+template<const char *type, const char *action>
+class TAction : public cOperationData
+{
+public:
+	void from_json(const char* sz) override {}
+};
+
+template<const char* type, const char* command, typename DATA>
+class TOperation : public cOperationData
+{
+public:
+	void from_json(const char* sz) override
+	{
+		::from_json(sz,t);
+	};
+	DATA t;
+};
+
+extern const char str_SpaceShip[] = "SpaceShip";
+extern const char str_Game[] = "Game";
+extern const char str_moveTo[] = "moveTo";
+extern const char str_stop[] = "stop";
+extern const char str_pause[] = "pause";
+
 // additional class to access to member of tested class
 class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem::Test_cFactory : public cFactory
 {
@@ -62,8 +86,16 @@ public:
 	static cSpaceShip* createSpaceShip(std::string id) { return new cSpaceShip(id); }
 	static cOperationData* createSerializeObj(const std::string& objId, const std::string& operationId)
 	{
-		throw(cException("not implemented"));
+		// change to map
+		// change to map
+		if (objId.starts_with(str_SpaceShip) && operationId == str_moveTo)
+			return new TOperation< str_SpaceShip, str_moveTo, cVector>;
+		if (objId.starts_with(str_SpaceShip) && operationId == str_stop)
+			return new TAction<str_SpaceShip, str_stop>;
+		if (objId.starts_with(str_Game) && operationId == str_pause)
+			return new TAction<str_Game, str_pause>;
 	}
+
 	static cVector* createInterpretCommand_moveTo() { return new cVector; }
 	static cInterpretCommand* createInterpretCommand(const cMessage& msg)
 	{ 
@@ -78,6 +110,9 @@ public:
 
 		return new cInterpretCommand(h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
 	}
+
+
+	static cVector* createInterpretCommandParameters() { return new cVector; }
 };
 
 
@@ -112,13 +147,9 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cEndPoint endPoint;
 
 	Test_cFactory f1;
-
-	f1.Register("cGame", Test_cFactory::createGame );
-	f1.Register("cSpaceShip", Test_cFactory::createSpaceShip);
-	f1.Register("cInterpretCommand.moveTo", Test_cFactory::createInterpretCommand_moveTo );
+	const cFactory& f11 = f1;
 
 	// registering 
-	const cFactory& f11 = f1;
 
 	// register factory ( only one scope )
 	IoC.Resolve<iCommand>("Register", "A", f11)->Execute();
@@ -127,20 +158,18 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	IoC.Resolve<iCommand>("Register", "A", "cGame", Test_cFactory::createGame )->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cSpaceShip", Test_cFactory::createSpaceShip)->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
-	
-	
 
+	// create games 
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
 	cGame* game2 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #2"));
 
 	endPoint.Register(game1);
 	endPoint.Register(game2);
 
-	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1 "));
-	cSpaceShip* spaceShip2 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #2 "));
-	cSpaceShip* spaceShip3 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #3 "));
-	cSpaceShip* spaceShip4 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #4 "));
-
+	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1"));
+	cSpaceShip* spaceShip2 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #2"));
+	cSpaceShip* spaceShip3 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #3"));
+	cSpaceShip* spaceShip4 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #4"));
 
 	game1->Register(spaceShip1);
 	game1->Register(spaceShip2);
@@ -149,10 +178,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 
 	cMessage m;
 	while (true == broker.get(m))
-	{
-		std::shared_ptr<cInterpretCommand> cmd = endPoint.parse(m);
-		cmd->Execute();
-	}
+		endPoint.process(m);
+
 }
 
 void cGame::push_back(std::shared_ptr<iCommand>&)
