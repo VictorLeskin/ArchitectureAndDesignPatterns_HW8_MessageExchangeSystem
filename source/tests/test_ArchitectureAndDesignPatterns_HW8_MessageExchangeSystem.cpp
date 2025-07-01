@@ -67,7 +67,8 @@ class TOperation : public cOperationData
 public:
 	void from_json(const char* sz) override
 	{
-		::from_json(sz,t);
+		nlohmann::json j = nlohmann::json::parse(sz);
+		::from_json(j, t);
 	};
 	DATA t;
 };
@@ -87,26 +88,26 @@ public:
 	static cOperationData* createSerializeObj(const std::string& objId, const std::string& operationId)
 	{
 		// change to map
-		// change to map
 		if (objId.starts_with(str_SpaceShip) && operationId == str_moveTo)
 			return new TOperation< str_SpaceShip, str_moveTo, cVector>;
 		if (objId.starts_with(str_SpaceShip) && operationId == str_stop)
 			return new TAction<str_SpaceShip, str_stop>;
 		if (objId.starts_with(str_Game) && operationId == str_pause)
 			return new TAction<str_Game, str_pause>;
+
+		return nullptr;
 	}
 
-	static cVector* createInterpretCommand_moveTo() { return new cVector; }
 	static cInterpretCommand* createInterpretCommand(const cMessage& msg)
 	{ 
 		// get game 
 		cMsgHeader h;
-		std::istringstream strm(msg.str());
+		std::istringstream strm(msg.Header());
 		nlohmann::json j = nlohmann::json::parse(strm);
 		from_json(j, h);
 
 		cOperationData *p = createSerializeObj(h.objId.id, h.operationId.id);
-		p->from_json(msg.str().c_str() + strm.tellg());
+		p->from_json(msg.Parameters().c_str());
 
 		return new cInterpretCommand(h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
 	}
@@ -163,9 +164,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
 	cGame* game2 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #2"));
 
-	endPoint.Register(game1);
-	endPoint.Register(game2);
-
 	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1"));
 	cSpaceShip* spaceShip2 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #2"));
 	cSpaceShip* spaceShip3 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #3"));
@@ -175,6 +173,19 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	game1->Register(spaceShip2);
 	game2->Register(spaceShip3);
 	game2->Register(spaceShip4);
+
+	endPoint.Register(game1);
+	endPoint.Register(game2);
+	endPoint.set(IoC);
+
+	TGameOperation<cVector> moveTo;
+	moveTo.gameId.id = "Game #1";
+	moveTo.objId.id = "SpaceShip #1";
+	moveTo.operationId.id = "moveTo";
+	moveTo.operationParameters = cVector(23, 45);
+
+	cMessage m1 = cMessage::Create(moveTo);
+	broker.put(m1);
 
 	cMessage m;
 	while (true == broker.get(m))

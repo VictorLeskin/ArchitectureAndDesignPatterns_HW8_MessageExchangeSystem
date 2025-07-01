@@ -104,6 +104,8 @@ TEST_F(test_cMessage, test_Create )
 
     auto t = cMessage::Create(k);
 
-    std::string res = R""""({"gameId":"gameId","objId":"ojectId","operationId":"operationId"}{"pos":{"x":303.0,"y":404.0},"type":22})"""";
-    EXPECT_EQ(res, t.str());
+    std::string resH = R""""({"gameId":"gameId","objId":"ojectId","operationId":"operationId"})"""";
+    std::string resP = R""""({"pos":{"x":303.0,"y":404.0},"type":22})"""";
+    EXPECT_EQ(resH, t.Header());
+    EXPECT_EQ(resP, t.Parameters());
 }

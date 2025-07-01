@@ -11,9 +11,12 @@ class cMessage;
 class cIoC;
 class cGame;
 
+#include "nlohmann/json.hpp"
+
 class cEndPoint
 {
 public:
+
 	void process(const cMessage& m);
 	void set(cIoC& IoC) { ioc = &IoC; }
 

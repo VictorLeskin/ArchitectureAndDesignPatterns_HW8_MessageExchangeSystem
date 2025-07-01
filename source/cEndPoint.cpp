@@ -7,6 +7,7 @@
 #include "cGame.hpp"
 #include "cJsonString.hpp"
 #include "cInterpretCommand.hpp"
+#include "cException.hpp"
 
 void cEndPoint::Register(cGame* game)
 {
@@ -17,15 +18,17 @@ void cEndPoint::process(const cMessage& msg)
 {
   // get game 
   cMsgHeader h;
-  nlohmann::json j = nlohmann::json::parse(msg.str());
+  nlohmann::json j = nlohmann::json::parse(msg.Header());
   from_json(j, h);
-
-  cGame* game = games[h.gameId.id];
 
   // create command
   cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", msg);
   std::shared_ptr<iCommand> cmd(pcmd);
   
   // push command to game's command deque
-  game->push_back(cmd);
+  cGame* game = games[h.gameId.id];
+  if (game == nullptr)
+    throw(cException("there is not such registered game"));
+  else
+    game->push_back(cmd);
 }

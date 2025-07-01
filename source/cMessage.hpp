@@ -87,7 +87,8 @@ class cMessage
 {
 public:
 	cMessage() {}
-	cMessage(std::string str_) : str_(str_) {}
+	cMessage(std::string sHeader, std::string sParameters) 
+		: sHeader(sHeader), sParameters(sParameters) {}
 
 	template<typename T_GAME_OPERATION>
 	static cMessage Create(const T_GAME_OPERATION& operation)
@@ -101,23 +102,20 @@ public:
 
 		nlohmann::json jHeader;
 		to_json(jHeader, header);
-		std::string sHeader = jHeader.dump();
+		msg.sHeader = jHeader.dump();
 
 		nlohmann::json jParameters;
 		to_json(jParameters, operation.operationParameters);
-		std::string sParameters = jParameters.dump();
-
-		msg.str_ = sHeader + sParameters;
+		msg.sParameters = jParameters.dump();
 
 		return msg;
 	}
 
-	const std::string& str() const { return str_; }
-
-	std::string OperationParameters() const;
+	const std::string& Header() const { return sHeader; }
+	const std::string& Parameters() const { return sParameters; }
 
 protected:
-	std::string str_;
+	std::string sHeader, sParameters;
 };
 
 #endif //#ifndef CMESSAGE_HPP
