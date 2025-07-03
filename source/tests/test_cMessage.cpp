@@ -46,21 +46,6 @@ void from_json(const nlohmann::json& j, test_cMessage::Test_cOperationParameters
 }
 
 
-void to_json(nlohmann::json& j, const cVector& v)
-{
-  j = nlohmann::json
-  {
-      { "x", v.x },
-      { "y", v.y }
-  };
-}
-
-
-void from_json(const nlohmann::json& j, cVector& v)
-{
-  j.at("x").get_to(v.x);
-  j.at("y").get_to(v.y);
-}
 
 
 

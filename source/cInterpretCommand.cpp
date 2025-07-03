@@ -2,8 +2,9 @@
 
 #include "cInterpretCommand.hpp"
 #include "cMessage.hpp"
+#include "cGame.hpp"
 
-cInterpretCommand::cInterpretCommand(const std::string& objId, const std::string& operationId, const std::shared_ptr<cOperationData>& operationData)
+void cInterpretCommand::Execute()
 {
-	throw(cException("not implemented"));
+  game->Execute(*this);
 }

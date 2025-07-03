@@ -21,14 +21,17 @@ void cEndPoint::process(const cMessage& msg)
   nlohmann::json j = nlohmann::json::parse(msg.Header());
   from_json(j, h);
 
+  sInterpretCommandData sd;
   // create command
-  cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", msg);
+  // push command to game's command deque
+  sd.game = games[h.gameId.id];
+  sd.msg = &msg;
+
+  cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", sd );
   std::shared_ptr<iCommand> cmd(pcmd);
   
-  // push command to game's command deque
-  cGame* game = games[h.gameId.id];
-  if (game == nullptr)
+  if (sd.game == nullptr)
     throw(cException("there is not such registered game"));
   else
-    game->push_back(cmd);
+    sd.game->push_back(cmd);
 }

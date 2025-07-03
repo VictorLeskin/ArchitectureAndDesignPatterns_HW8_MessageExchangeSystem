@@ -2,24 +2,24 @@
 
 #include <gtest/gtest.h>
 
-#include "cGame.hpp"
+#include "cSpaceShip.hpp"
 
 // gTest grouping class
-class test_cGame : public ::testing::Test
+class test_cSpaceShip : public ::testing::Test
 {
 public:
   // additional class to access to member of tested class
-  class Test_cGame : public cGame
+  class Test_cSpaceShip : public cSpaceShip
   {
   public:
     // add here members for free access.
-    using cGame::cGame; // delegate constructors
+    using cSpaceShip::cSpaceShip; // delegate constructors
   };
 
 };
  
-TEST_F(test_cGame, test_ctor )
+TEST_F(test_cSpaceShip, test_ctor )
 {
-  //Test_cGame t("name");
+  Test_cSpaceShip t("x");
 }
 

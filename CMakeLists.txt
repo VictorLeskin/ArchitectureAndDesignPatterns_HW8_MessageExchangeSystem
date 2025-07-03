@@ -50,6 +50,12 @@ add_executable(
   source/cInterpretCommand.cpp
   source/cException.hpp
   source/cException.cpp
+  source/cExceptionsHandler.hpp 
+  source/cExceptionsHandler.cpp
+  source/cSpaceShip.hpp
+  source/cSpaceShip.cpp
+  source/cStopCommand.cpp
+  source/cStopCommand.hpp
 #add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
   source/tests/test_aMessageBroker.cpp
@@ -66,6 +72,9 @@ add_executable(
   source/tests/test_cJsonString.cpp
   source/tests/test_cInterpretCommand.cpp
   source/tests/test_cException.cpp
+  source/tests/test_cExceptionsHandler.cpp
+  source/tests/test_cSpaceShip.cpp
+  source/tests/test_cStopCommand.cpp
 #add test file here
 )
 

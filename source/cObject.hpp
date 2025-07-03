@@ -4,6 +4,8 @@
 
 #include <string>
 
+class cInterpretCommand;
+
 class cObject
 {
 public:
@@ -12,6 +14,8 @@ public:
 	virtual ~cObject() {}
 
 	const std::string& Id() const { return id; }
+
+	virtual void Execute(const cInterpretCommand& cmd) {};
 
 protected:
 	std::string id;

@@ -4,20 +4,59 @@
 
 #include "cObject.hpp"
 #include "cGameId.hpp"
+#include "cThreadSafeDeque.hpp"
+#include "cException.hpp"
 
 #include <memory>
+#include <map>
 
 class cSpaceShip;
 class iCommand;
+class cExceptionsHandler;
+
+class cSoftStopCommand;
+class cHardStopCommand;
+class cCommandCounter;
+class cInterpretCommand;
+
 
 class cGame : public cObject
 {
 public:
-	cGame(std::string id) : cObject(id) {}
+	cGame(std::string id);
 
-	void Register(cSpaceShip* spaceShip1) {}
+	void Execute(const cSoftStopCommand& cmd);
+	void Execute(const cHardStopCommand& cmd) { throw cException("not implemented"); }
+	void Execute(const cCommandCounter& cmd) { throw cException("not implemented"); }
+	void Execute(const cInterpretCommand& cmd);
 
-	void push_back(std::shared_ptr<iCommand>&);
+	void Register(cSpaceShip* spaceShip1);
+
+	void push_back(const std::shared_ptr<iCommand>& p)
+	{
+		deque.push_back(p);
+	}
+	
+  void join()	{ t.join(); }
+	void detach()	{	t.detach(); }
+	void play() { iPlay = true; }
+
+	const cObject* operator[](const std::string& s) const
+	{
+		return gameObjects.at(s);
+	}
+
+protected:
+
+	void thread_run();
+	                  
+	TThreadSafeDeque< std::shared_ptr<iCommand> > deque;
+	std::map<std::string, cObject *> gameObjects;
+
+	std::thread t;
+	std::atomic_int iPlay = false, iStop = false, iSoftStop = false;
+	cExceptionsHandler* handler = nullptr;
+
 };
 
 #endif //#ifndef CGAME_HPP

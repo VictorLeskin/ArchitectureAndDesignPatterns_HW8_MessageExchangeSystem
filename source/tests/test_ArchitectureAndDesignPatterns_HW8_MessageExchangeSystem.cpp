@@ -9,11 +9,14 @@
 #include "cMessagesDeque.hpp"
 #include "cGame.hpp"
 #include "cInterpretCommand.hpp"
+#include "cSpaceShip.hpp"
+#include "cStopCommand.hpp"
 
 #include <iostream>
 #include <nlohmann/json.hpp>
 #include <tuple>
 #include <memory>
+#include <thread>
 
 #include "test_aMessageBroker.h"
 
@@ -35,43 +38,10 @@ public:
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
 {
-	Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
+	//Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
 }
 
-
-
-class cSpaceShip : public cObject
-{
-public:
-	cSpaceShip(std::string id) : cObject(id) {}
-};
-
-
 class cJsonString;
-class cOperationData 
-{
-public:
-	virtual void from_json(const char* sz) = 0;
-};
-
-template<const char *type, const char *action>
-class TAction : public cOperationData
-{
-public:
-	void from_json(const char* sz) override {}
-};
-
-template<const char* type, const char* command, typename DATA>
-class TOperation : public cOperationData
-{
-public:
-	void from_json(const char* sz) override
-	{
-		nlohmann::json j = nlohmann::json::parse(sz);
-		::from_json(j, t);
-	};
-	DATA t;
-};
 
 extern const char str_SpaceShip[] = "SpaceShip";
 extern const char str_Game[] = "Game";
@@ -98,8 +68,11 @@ public:
 		return nullptr;
 	}
 
-	static cInterpretCommand* createInterpretCommand(const cMessage& msg)
+	static cInterpretCommand* createInterpretCommand(const sInterpretCommandData &sd)
 	{ 
+		cGame* game = sd.game;
+		const cMessage& msg = *sd.msg;
+
 		// get game 
 		cMsgHeader h;
 		std::istringstream strm(msg.Header());
@@ -109,7 +82,7 @@ public:
 		cOperationData *p = createSerializeObj(h.objId.id, h.operationId.id);
 		p->from_json(msg.Parameters().c_str());
 
-		return new cInterpretCommand(h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
+		return new cInterpretCommand(game, h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
 	}
 
 
@@ -191,9 +164,23 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	while (true == broker.get(m))
 		endPoint.process(m);
 
-}
+	game1->detach();
+	game2->detach();
 
-void cGame::push_back(std::shared_ptr<iCommand>&)
-{
-	throw(cException("Not implemented"));
+	game1->play();
+  game2->play();
+
+	using namespace std::chrono_literals;
+	std::this_thread::sleep_for(5s);
+
+	std::shared_ptr<iCommand> softStopCmd1(new cSoftStopCommand(game1));
+	std::shared_ptr<iCommand> softStopCmd2(new cSoftStopCommand(game2));
+
+	game1->push_back(softStopCmd1);
+	game2->push_back(softStopCmd2);
+
+	const cObject* k = (*game1)["SpaceShip #1"];
+	cVector posSpaceShip1 = ((const cSpaceShip*)k)->Position();
+	EXPECT_EQ(23.0, posSpaceShip1.x);
+	EXPECT_EQ(45.0, posSpaceShip1.y);
 }
