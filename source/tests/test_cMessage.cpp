@@ -3,6 +3,7 @@
 #include <gtest/gtest.h>
 
 #include "cMessage.hpp"
+#include "cInterpretCommand.hpp"
 
 // gTest grouping class
 class test_cMessage : public ::testing::Test
