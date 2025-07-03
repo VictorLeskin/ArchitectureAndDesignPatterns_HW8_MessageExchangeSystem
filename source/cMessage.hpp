@@ -3,7 +3,7 @@
 #define CMESSAGE_HPP
 
 #include <string>
-#include "cvector.hpp"
+#include "cVector.hpp"
 #include "nlohmann/json.hpp"
 
 #include "cGameId.hpp"
