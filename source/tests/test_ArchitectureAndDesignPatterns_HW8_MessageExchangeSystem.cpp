@@ -170,24 +170,33 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cMessage m2 = cMessage::Create(refuel);
 	broker.put(m2);
 
+	printf("LN %d\n", __LINE__);
+
 	cMessage m;
 	while (true == broker.get(m))
 		endPoint.process(m);
 
+	printf("LN %d\n", __LINE__);
+
 	game1->detach();
 	game2->detach();
+	printf("LN %d\n", __LINE__);
 
 	game1->play();
     game2->play();
+	printf("LN %d\n", __LINE__);
 
 	using namespace std::chrono_literals;
 	std::this_thread::sleep_for(5s);
+	printf("LN %d\n", __LINE__);
 
 	std::shared_ptr<iCommand> softStopCmd1(new cSoftStopCommand(game1));
 	std::shared_ptr<iCommand> softStopCmd2(new cSoftStopCommand(game2));
 
 	game1->push_back(softStopCmd1);
 	game2->push_back(softStopCmd2);
+
+	printf("LN %d\n", __LINE__);
 
 	const cObject* k = (*game1)["SpaceShip #1"];
 	cVector posSpaceShip1 = ((const cSpaceShip*)k)->Position();
@@ -197,4 +206,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	const cObject* k2 = (*game2)["SpaceShip #4"];
 	auto fuel = ((const cSpaceShip*)k2)->Fuel();
 	EXPECT_EQ(25, fuel);
+
+	printf("LN %d\n", __LINE__);
 }
