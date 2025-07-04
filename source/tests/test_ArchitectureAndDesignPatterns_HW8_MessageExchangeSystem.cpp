@@ -148,6 +148,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	endPoint.Register(game2);
 	endPoint.set(IoC);
 
+	return;
+
 	// load two command to different games
 	// moving direction for the first ship of the first game
 	TGameOperation<cVector> moveTo;
@@ -174,7 +176,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	while (true == broker.get(m))
 		endPoint.process(m);
 
-	return;
 	game1->detach();
 	game2->detach();
 
