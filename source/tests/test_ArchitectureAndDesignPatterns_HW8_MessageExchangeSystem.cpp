@@ -158,8 +158,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 
 	cMessage m1 = cMessage::Create(moveTo);
 
-	return;
-
 	broker.put(m1);
 
 	// load bombs to the second ship of the second game
@@ -172,6 +170,9 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 
 	cMessage m2 = cMessage::Create(refuel);
 	broker.put(m2);
+
+	return;
+
 
 	cMessage m;
 	while (true == broker.get(m))
