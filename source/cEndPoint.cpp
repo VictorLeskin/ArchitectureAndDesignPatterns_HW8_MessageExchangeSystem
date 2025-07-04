@@ -14,6 +14,8 @@ void cEndPoint::Register(cGame* game)
 	games[game->Id()] = game;
 }
 
+#include <gtest/gtest.h>
+
 void cEndPoint::process(const cMessage& msg)
 {
   // get game 
@@ -25,9 +27,11 @@ void cEndPoint::process(const cMessage& msg)
   // create command
   // push command to game's command deque
   sd.game = games[h.gameId.id];
+  EXPECT_TRUE(sd.game != nullptr);
   sd.msg = &msg;
 
   cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", sd );
+  EXPECT_TRUE(pcmd != nullptr);
   std::shared_ptr<iCommand> cmd(pcmd);
   
   if (sd.game == nullptr)
