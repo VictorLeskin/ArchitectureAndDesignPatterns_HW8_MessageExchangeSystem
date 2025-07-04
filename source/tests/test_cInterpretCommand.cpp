@@ -17,7 +17,6 @@ public:
 
 	void Execute() override {}
 	const char* Type() override { return "Test_cInterpretCommand"; }
-
   };
 
 };

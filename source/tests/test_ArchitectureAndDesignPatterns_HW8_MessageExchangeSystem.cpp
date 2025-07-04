@@ -46,8 +46,7 @@ class cJsonString;
 extern const char str_SpaceShip[] = "SpaceShip";
 extern const char str_Game[] = "Game";
 extern const char str_moveTo[] = "moveTo";
-extern const char str_stop[] = "stop";
-extern const char str_pause[] = "pause";
+extern const char str_refuel[] = "refuel";
 
 // additional class to access to member of tested class
 class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem::Test_cFactory : public cFactory
@@ -60,10 +59,8 @@ public:
 		// change to map
 		if (objId.starts_with(str_SpaceShip) && operationId == str_moveTo)
 			return new TOperation< str_SpaceShip, str_moveTo, cVector>;
-		if (objId.starts_with(str_SpaceShip) && operationId == str_stop)
-			return new TAction<str_SpaceShip, str_stop>;
-		if (objId.starts_with(str_Game) && operationId == str_pause)
-			return new TAction<str_Game, str_pause>;
+		if (objId.starts_with(str_SpaceShip) && operationId == str_refuel)
+			return new TOperation<str_SpaceShip, str_refuel, cTanker>;
 
 		return nullptr;
 	}
@@ -151,6 +148,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	endPoint.Register(game2);
 	endPoint.set(IoC);
 
+	// load two command to different games
+	// moving direction for the first ship of the first game
 	TGameOperation<cVector> moveTo;
 	moveTo.gameId.id = "Game #1";
 	moveTo.objId.id = "SpaceShip #1";
@@ -160,6 +159,17 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cMessage m1 = cMessage::Create(moveTo);
 	broker.put(m1);
 
+	// load bombs to the second ship of the second game
+	TGameOperation<cTanker> refuel;
+	refuel.gameId.id = "Game #2";
+	refuel.objId.id = "SpaceShip #4";
+	refuel.operationId.id = "refuel";
+	cTanker tanker; tanker.fuel = 37;
+	refuel.operationParameters = tanker;
+
+	cMessage m2 = cMessage::Create(refuel);
+	broker.put(m2);
+
 	cMessage m;
 	while (true == broker.get(m))
 		endPoint.process(m);
@@ -168,7 +178,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	game2->detach();
 
 	game1->play();
-  game2->play();
+    game2->play();
 
 	using namespace std::chrono_literals;
 	std::this_thread::sleep_for(5s);
@@ -183,4 +193,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cVector posSpaceShip1 = ((const cSpaceShip*)k)->Position();
 	EXPECT_EQ(23.0, posSpaceShip1.x);
 	EXPECT_EQ(45.0, posSpaceShip1.y);
+
+	const cObject* k2 = (*game2)["SpaceShip #4"];
+	auto fuel = ((const cSpaceShip*)k2)->Fuel();
+	EXPECT_EQ(25, fuel);
 }

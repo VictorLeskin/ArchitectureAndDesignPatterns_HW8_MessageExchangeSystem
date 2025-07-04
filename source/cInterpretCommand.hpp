@@ -8,9 +8,13 @@
 #include <nlohmann/json.hpp>
 #include "cVector.hpp"
 
+#include "cSpaceShip.hpp"
+
+
 class cOperationData;
 class cGame;
 class cMessage;
+class cTanker;
 
 inline void to_json(nlohmann::json& j, const cVector& v)
 {
@@ -26,6 +30,9 @@ inline void from_json(const nlohmann::json& j, cVector& v)
 	j.at("x").get_to(v.x);
 	j.at("y").get_to(v.y);
 }
+
+void to_json(nlohmann::json& j, const cTanker& v);
+void from_json(const nlohmann::json& j, cTanker& v);
 
 class cOperationData
 {
@@ -51,7 +58,6 @@ public:
 	};
 	DATA t;
 };
-
 
 
 struct sInterpretCommandData

@@ -5,7 +5,7 @@
 
 #include "aMessageBroker.hpp"
 #include "cMessage.hpp"
-#include <optional>
+#include <deque>
 
 
 // gTest grouping class
@@ -16,14 +16,14 @@ public:
   class Test_aMessageBroker : public aMessageBroker
   {
   public:
-    std::optional<cMessage> msg;
+    std::deque<cMessage> msg;
 
     bool get(cMessage& m) override
     {
-      if (msg.has_value())
+      if (false == msg.empty())
       {
-        m = msg.value();
-        msg.reset();
+        m = msg.front();
+        msg.pop_front();
         return true;
       }
       else
@@ -32,7 +32,7 @@ public:
 
     void put(cMessage& m)
     {
-      msg = m;
+        msg.push_back(m);
     }
   public:
     // add here members for free access.

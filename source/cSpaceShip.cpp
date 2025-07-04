@@ -8,7 +8,7 @@
 
 extern const char str_SpaceShip[];
 extern const char str_moveTo[];
-
+extern const char str_refuel[];
 
 void cSpaceShip::Execute(const cInterpretCommand& cmd)
 {
@@ -20,4 +20,13 @@ void cSpaceShip::Execute(const cInterpretCommand& cmd)
     const derived* p1 = (const derived*)(p);
     moveTo(p1->t);
   }
+  else if (cmd.OperationId() == "refuel")
+  {
+      using derived = TOperation< str_SpaceShip, str_refuel, cTanker>;
+
+      const cOperationData* p = cmd.OperationData().get();
+      const derived* p1 = (const derived*)(p);
+      refuel(p1->t);
+  }
+
 }
