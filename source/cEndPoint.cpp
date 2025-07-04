@@ -27,9 +27,8 @@ void cEndPoint::process(const cMessage& msg)
   sd.game = games[h.gameId.id];
   sd.msg = &msg;
 
-  return;
-
   cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", sd );
+  return;
   std::shared_ptr<iCommand> cmd(pcmd);
   
   if (sd.game == nullptr)
