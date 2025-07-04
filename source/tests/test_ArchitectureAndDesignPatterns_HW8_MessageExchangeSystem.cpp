@@ -175,7 +175,9 @@ try
 
 	EXPECT_EQ(1, IoC.Factories().size());
 	const cFactory& f = IoC.Factories().at("A");
-
+	EXPECT_EQ(3, f.size());
+	const std::map<std::string, const void*>& p = f.FactoryMethods();
+	EXPECT_TRUE( p.find("cGame") != p.end() );
 	return;
 
 	cMessage m;

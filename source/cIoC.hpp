@@ -85,6 +85,7 @@ public:
     }
 
     int size() const { return int(factoryMethods.size()); }
+    const std::map<std::string, const void*>& FactoryMethods() const { return factoryMethods; }
 
 protected:
     // keeps the pointer as old plain pointers.
@@ -92,6 +93,7 @@ protected:
     {
         factoryMethods[objName] = f;
     }
+
 
 protected:
     std::map<std::string, const void*> factoryMethods;
