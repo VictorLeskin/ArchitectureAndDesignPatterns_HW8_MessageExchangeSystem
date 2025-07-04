@@ -171,12 +171,11 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cMessage m2 = cMessage::Create(refuel);
 	broker.put(m2);
 
-	return;
-
-
 	cMessage m;
 	while (true == broker.get(m))
 		endPoint.process(m);
+
+	return;
 
 	game1->detach();
 	game2->detach();
