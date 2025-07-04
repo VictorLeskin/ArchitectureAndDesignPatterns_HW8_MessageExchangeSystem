@@ -148,8 +148,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	endPoint.Register(game2);
 	endPoint.set(IoC);
 
-	return;
-
 	// load two command to different games
 	// moving direction for the first ship of the first game
 	TGameOperation<cVector> moveTo;
@@ -159,6 +157,9 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	moveTo.operationParameters = cVector(23, 45);
 
 	cMessage m1 = cMessage::Create(moveTo);
+
+	return;
+
 	broker.put(m1);
 
 	// load bombs to the second ship of the second game
