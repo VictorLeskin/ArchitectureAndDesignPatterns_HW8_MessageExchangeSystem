@@ -112,6 +112,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMe
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_EndpointCommonBehaviour)
 {
+try
+{
 	// create message broker.
 	test_aMessageBroker::Test_aMessageBroker broker;
 	cIoC IoC;
@@ -174,13 +176,12 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cMessage m;
 	while (true == broker.get(m))
 		endPoint.process(m);
-	return;
 
 	game1->detach();
 	game2->detach();
 
 	game1->play();
-    game2->play();
+	game2->play();
 
 	using namespace std::chrono_literals;
 	std::this_thread::sleep_for(5s);
@@ -199,4 +200,12 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	const cObject* k2 = (*game2)["SpaceShip #4"];
 	auto fuel = ((const cSpaceShip*)k2)->Fuel();
 	EXPECT_EQ(25, fuel);
+}
+catch (std::exception &e )
+{
+	FAIL() << e.what() << std::endl;
+
+}
+	return;
+
 }
