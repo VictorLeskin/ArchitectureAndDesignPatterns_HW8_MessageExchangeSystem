@@ -187,6 +187,9 @@ protected:
         return doResolve<T, Args...>(s1, s2, std::forward<const Args>(args)...);
     }
 
+public:
+    const std::map<std::string, cFactory>& Factories() const { return factories; }
+
 protected:
     std::map<std::string, cFactory> factories;
 };

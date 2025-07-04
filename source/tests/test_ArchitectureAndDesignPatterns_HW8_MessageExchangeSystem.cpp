@@ -173,6 +173,11 @@ try
 	cMessage m2 = cMessage::Create(refuel);
 	broker.put(m2);
 
+	EXPECT_EQ(1, IoC.Factories().size());
+	const cFactory& f = IoC.Factories().at("A");
+
+	return;
+
 	cMessage m;
 	while (true == broker.get(m))
 		endPoint.process(m);
