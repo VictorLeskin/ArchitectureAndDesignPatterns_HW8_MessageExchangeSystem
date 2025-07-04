@@ -174,7 +174,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_Endpoi
 	cMessage m;
 	while (true == broker.get(m))
 		endPoint.process(m);
-
 	return;
 
 	game1->detach();
