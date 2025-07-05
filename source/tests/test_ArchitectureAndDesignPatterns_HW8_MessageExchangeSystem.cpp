@@ -72,7 +72,7 @@ public:
 		return nullptr;
 	}
 
-	static cInterpretCommand* createInterpretCommand(const sInterpretCommandData &sd)
+	static iCommand* createInterpretCommand(const sInterpretCommandData &sd)
 	{ 
 		EXPECT_TRUE(nullptr == sd.game);
 		EXPECT_TRUE(nullptr == sd.msg);
