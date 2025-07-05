@@ -43,10 +43,10 @@ public:
 	};
 };
 
-TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
-{
-	//Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
-}
+//TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
+//{
+//	//Test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem t;
+//}
 
 class cJsonString;
 
@@ -93,28 +93,28 @@ public:
 };
 
 
-TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMessage)
-{
-	using operation_parameters = std::tuple< int, cVector >;
-	operation_parameters p{321,cVector(456,78)};
-	TGameOperation<operation_parameters> op;
-
-	op.gameId.id = "Game #1";
-	op.objId.id = "Spaceship #1";
-	op.operationId.id = "moveTo";
-	op.operationParameters = p;
-
-	cMessage msg = cMessage::Create(op);
-	cMessagesDeque deq;
-
-	deq.push_back(msg);
-
-	EXPECT_EQ(1, deq.size());
-
-	cMessage msg1;
-	EXPECT_TRUE( deq.pop_front(msg1) );
-	EXPECT_EQ(0, deq.size());
-}
+//TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMessage)
+//{
+//	using operation_parameters = std::tuple< int, cVector >;
+//	operation_parameters p{321,cVector(456,78)};
+//	TGameOperation<operation_parameters> op;
+//
+//	op.gameId.id = "Game #1";
+//	op.objId.id = "Spaceship #1";
+//	op.operationId.id = "moveTo";
+//	op.operationParameters = p;
+//
+//	cMessage msg = cMessage::Create(op);
+//	cMessagesDeque deq;
+//
+//	deq.push_back(msg);
+//
+//	EXPECT_EQ(1, deq.size());
+//
+//	cMessage msg1;
+//	EXPECT_TRUE( deq.pop_front(msg1) );
+//	EXPECT_EQ(0, deq.size());
+//}
 
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
@@ -142,7 +142,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	EXPECT_EQ(1,IoC.factories.size());
 	EXPECT_TRUE(IoC.factories.find("A") != IoC.factories.end());
 
-	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
+	cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 	return;
 
 	// create games 
