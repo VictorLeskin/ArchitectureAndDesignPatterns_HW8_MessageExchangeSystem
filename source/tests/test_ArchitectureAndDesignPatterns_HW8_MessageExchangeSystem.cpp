@@ -119,18 +119,15 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	cEndPoint endPoint;
 
 	Test_cFactory f1;
-	const cFactory& f11 = f1;
 
-	// registering 
+	f1.Register( "cGame", Test_cFactory::createGame);
+	f1.Register( "cSpaceShip", Test_cFactory::createSpaceShip);
+	f1.Register("cInterpretCommand", Test_cFactory::createInterpretCommand);
+
+	const cFactory& f11 = f1;
 
 	// register factory ( only one scope )
 	IoC.Resolve<iCommand>("Register", "A", f11)->Execute();
-
-	// register two factory methods for game and spaceship
-	IoC.Resolve<iCommand>("Register", "A", "cGame", Test_cFactory::createGame)->Execute();
-	IoC.Resolve<iCommand>("Register", "A", "cSpaceShip", Test_cFactory::createSpaceShip)->Execute();
-	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
-
 
 	sInterpretCommandData sd;
 	sd.game = nullptr;
