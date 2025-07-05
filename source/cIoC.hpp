@@ -21,6 +21,7 @@
 // User should run Execute() to perform real registering
 
 extern void DBG(int t);
+extern void DBG1( void * method);
 
 class cIoCImpl;
 class cFactory;
@@ -161,6 +162,7 @@ protected:
     {
         DBG(0);
         auto method = getMethod<T, Args... >(s1, s2);
+        DBG1(method);
         using f = T * (*)(Args...);
         DBG(1);
         return nullptr;

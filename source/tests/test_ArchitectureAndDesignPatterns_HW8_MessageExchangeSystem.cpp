@@ -133,6 +133,13 @@ void DBG(int t)
 
 	iEntry++;
 }
+
+void* qq;
+
+void DBG1(void* method)
+{
+	EXPECT_EQ(qq, method );
+}
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 {
 	// create message broker.
@@ -145,6 +152,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	f1.Register( "cGame", Test_cFactory::createGame);
 	f1.Register( "cSpaceShip", Test_cFactory::createSpaceShip);
 	f1.Register("cInterpretCommand", Test_cFactory::createInterpretCommand);
+
+	qq = Test_cFactory::createInterpretCommand;
 
 	const cFactory& f11 = f1;
 
