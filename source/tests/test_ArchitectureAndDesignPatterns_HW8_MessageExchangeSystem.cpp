@@ -110,6 +110,55 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMe
 	EXPECT_EQ(0, deq.size());
 }
 
+
+TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
+{
+	// create message broker.
+	test_aMessageBroker::Test_aMessageBroker broker;
+	cIoC IoC;
+	cEndPoint endPoint;
+
+	Test_cFactory f1;
+	const cFactory& f11 = f1;
+
+	// registering 
+
+	// register factory ( only one scope )
+	IoC.Resolve<iCommand>("Register", "A", f11)->Execute();
+
+	// register two factory methods for game and spaceship
+	IoC.Resolve<iCommand>("Register", "A", "cGame", Test_cFactory::createGame)->Execute();
+	IoC.Resolve<iCommand>("Register", "A", "cSpaceShip", Test_cFactory::createSpaceShip)->Execute();
+	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
+
+	// create games 
+	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
+
+	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1"));
+
+	game1->Register(spaceShip1);
+
+	endPoint.Register(game1);
+	endPoint.set(IoC);
+
+	// load two command to different games
+	// moving direction for the first ship of the first game
+	TGameOperation<cVector> moveTo;
+	moveTo.gameId.id = "Game #1";
+	moveTo.objId.id = "SpaceShip #1";
+	moveTo.operationId.id = "moveTo";
+	moveTo.operationParameters = cVector(23, 45);
+
+	cMessage m1 = cMessage::Create(moveTo);
+	broker.put(m1);
+
+	cMessage m;
+	while (true == broker.get(m))
+		endPoint.process(m);
+}
+
+
+
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_EndpointCommonBehaviour)
 {
 	// create message broker.
