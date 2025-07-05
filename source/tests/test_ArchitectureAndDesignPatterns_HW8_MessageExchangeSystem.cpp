@@ -157,10 +157,10 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	EXPECT_EQ(Test_cFactory::createSpaceShip, it->second);
 
 	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
-	return;
 
 	// create games 
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
+	return;
 
 	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1"));
 	
