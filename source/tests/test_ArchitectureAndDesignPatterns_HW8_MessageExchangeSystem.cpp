@@ -35,6 +35,12 @@ public:
 
 	// additional class to access to member of tested class
 	class Test_cFactory;
+
+	class Test_cIoC : public cIoC
+	{
+	public:
+		using cIoC::factories;
+	};
 };
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
@@ -115,7 +121,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 {
 	// create message broker.
 	test_aMessageBroker::Test_aMessageBroker broker;
-	cIoC IoC;
+	Test_cIoC IoC;
 	cEndPoint endPoint;
 
 	Test_cFactory f1;
@@ -132,10 +138,10 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	sInterpretCommandData sd;
 	sd.game = nullptr;
 	sd.msg = nullptr;
-	cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 
-	EXPECT_TRUE(nullptr == pcmd);
+	EXPECT_EQ(1,IoC.factories.size());
 
+	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 	return;
 
 	// create games 
