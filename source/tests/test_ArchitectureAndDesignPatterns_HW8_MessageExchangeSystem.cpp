@@ -19,6 +19,7 @@
 #include <thread>
 
 #include "test_aMessageBroker.h"
+#include "test_cFactory.hpp"
 
 // gTest grouping class
 class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem : public ::testing::Test
@@ -31,9 +32,6 @@ public:
 		// add here members for free access.
 		using ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem::ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem; // delegate constructors
 	};
-
-	// additional class to access to member of tested class
-	class Test_cFactory;
 };
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_ctor)
@@ -47,42 +45,6 @@ extern const char str_SpaceShip[] = "SpaceShip";
 extern const char str_Game[] = "Game";
 extern const char str_moveTo[] = "moveTo";
 extern const char str_refuel[] = "refuel";
-
-// additional class to access to member of tested class
-class test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem::Test_cFactory : public cFactory
-{
-public:
-	static cGame* createGame( std::string id ) { return new cGame(id); }
-	static cSpaceShip* createSpaceShip(std::string id) { return new cSpaceShip(id); }
-	static cOperationData* createSerializeObj(const std::string& objId, const std::string& operationId)
-	{
-		// change to map
-		if (objId.starts_with(str_SpaceShip) && operationId == str_moveTo)
-			return new TOperation< str_SpaceShip, str_moveTo, cVector>;
-		if (objId.starts_with(str_SpaceShip) && operationId == str_refuel)
-			return new TOperation<str_SpaceShip, str_refuel, cTanker>;
-
-		return nullptr;
-	}
-
-	static iCommand* createInterpretCommand(sInterpretCommandData sd)
-	{ 
-		cGame* game = sd.game;
-		const cMessage& msg = *sd.msg;
-
-		// get game 
-		cMsgHeader h;
-		std::istringstream strm(msg.Header());
-		nlohmann::json j = nlohmann::json::parse(strm);
-		from_json(j, h);
-
-		cOperationData *p = createSerializeObj(h.objId.id, h.operationId.id);
-		p->from_json(msg.Parameters().c_str());
-
-		return new cInterpretCommand(game, h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
-	}
-};
-
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMessage)
 {
@@ -105,31 +67,6 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_sendMe
 	cMessage msg1;
 	EXPECT_TRUE( deq.pop_front(msg1) );
 	EXPECT_EQ(0, deq.size());
-}
-
-
-void DBG(int t)
-{
-	static int iEntry = 0;
-
-	if (iEntry == 0)
-		EXPECT_EQ(t, 0);
-	if (iEntry == 1)
-		EXPECT_EQ(t, 1);
-
-	iEntry++;
-}
-
-void* qq;
-
-void DBG1(void* method)
-{
-	EXPECT_EQ(qq, method );
-}
-
-void DBG2(const char *sz )
-{
-	EXPECT_EQ( std::string("aaa"), std::string(sz) );
 }
 
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_EndpointCommonBehaviour)

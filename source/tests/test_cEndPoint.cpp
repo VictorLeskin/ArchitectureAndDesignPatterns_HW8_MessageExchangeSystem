@@ -4,6 +4,9 @@
 
 #include "cEndPoint.hpp"
 #include "cMessage.hpp"
+#include "cGame.hpp"
+#include "cIoC.hpp"
+#include "cSpaceShip.hpp"
 
 // gTest grouping class
 class test_cEndPoint : public ::testing::Test
@@ -16,8 +19,8 @@ public:
     // add here members for free access.
     using cEndPoint::cEndPoint; // delegate constructors
     using cEndPoint::process;
+    using cEndPoint::games;
   };
-
 };
  
 TEST_F(test_cEndPoint, test_ctor )
@@ -25,16 +28,48 @@ TEST_F(test_cEndPoint, test_ctor )
   Test_cEndPoint t;
 }
 
+TEST_F(test_cEndPoint, test_Register)
+{
+    cGame* game = new cGame("AA");
+    Test_cEndPoint t;
+
+    t.Register(game);
+    EXPECT_EQ(1, t.games.size());
+    EXPECT_EQ(game, t.games["AA"]);
+}
+
 TEST_F(test_cEndPoint, test_process)
 {
-  {
-    Test_cEndPoint t;
-    const char* szHeader     = R""""({"gameId":"Game #1","objId":"SpaceShip #1","operationId":"moveTo"})"""";
-    const char* szParameters = R""""({"x":23.0,"y":45.0})"""";
-    cMessage msg(szHeader, szParameters);
-
-    //t.process(msg);
-  }
+//	// create message broker.
+//	cIoC IoC;
+//	Test_cEndPoint t;
+//
+//	cFactory f11;
+//
+//	// register factory ( only one scope )
+//	IoC.Resolve<iCommand>("Register", "A", f11)->Execute();
+//
+//	// register two factory methods for game and spaceship
+//	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
+//
+//	// create games 
+//	cGame* game1 = new cGame( std::string("Game #1"));
+//	cSpaceShip* spaceShip2 = new cSpaceShip( std::string("SpaceShip #2"));
+//	game1->Register(spaceShip2);
+//
+//	t.Register(game1);
+//	t.set(IoC);
+//
+//	// load two command to different games
+//	// moving direction for the first ship of the first game
+//	TGameOperation<cVector> moveTo;
+//	moveTo.gameId.id = "Game #1";
+//	moveTo.objId.id = "SpaceShip #1";
+//	moveTo.operationId.id = "moveTo";
+//	moveTo.operationParameters = cVector(23, 45);
+//
+//	cMessage m1 = cMessage::Create(moveTo);
+//	t.process(m1);
 }
 
 

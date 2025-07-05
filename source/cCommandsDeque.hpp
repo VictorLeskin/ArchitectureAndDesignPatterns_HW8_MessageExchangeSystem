@@ -34,8 +34,4 @@ protected:
 	std::deque< std::unique_ptr<iCommand> > commands;
 };
 
-class cThreadSafeCommandsDeque : public cCommandsDeque
-{ 
-};
-
 #endif //#ifndef CCOMMANDSDEQUE_HPP

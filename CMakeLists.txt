@@ -75,6 +75,8 @@ add_executable(
   source/tests/test_cExceptionsHandler.cpp
   source/tests/test_cSpaceShip.cpp
   source/tests/test_cStopCommand.cpp
+  source/tests/test_cFactory.cpp
+  source/tests/test_cFactory.hpp
 #add test file here
 )
 
