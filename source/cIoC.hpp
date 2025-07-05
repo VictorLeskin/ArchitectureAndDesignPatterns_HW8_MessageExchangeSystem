@@ -165,6 +165,7 @@ protected:
         DBG1(method);
         using f = T * (*)(Args...);
         DBG(1);
+        return ((f)method)(args...);
         return nullptr;
         //return (*f(method))(args...);
     }
