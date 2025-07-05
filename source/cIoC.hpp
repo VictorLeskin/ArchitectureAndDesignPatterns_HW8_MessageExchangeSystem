@@ -93,7 +93,7 @@ protected:
         factoryMethods[objName] = f;
     }
 
-protected:
+public:
     std::map<std::string, const void*> factoryMethods;
 };
 

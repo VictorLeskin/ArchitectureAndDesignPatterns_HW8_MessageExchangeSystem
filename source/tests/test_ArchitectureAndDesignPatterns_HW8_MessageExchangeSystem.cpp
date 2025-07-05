@@ -141,6 +141,12 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 
 	EXPECT_EQ(1,IoC.factories.size());
 	EXPECT_TRUE(IoC.factories.find("A") != IoC.factories.end());
+	std::shared_ptr<cFactory> &f = IoC.factories["A"];
+
+	EXPECT_EQ(3, f->factoryMethods.size());
+	
+	//for( auto it = a.begin(); it != a.end(); ++it )
+
 
 	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 	return;
