@@ -148,10 +148,13 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	auto it = f->factoryMethods.begin(); 
 	
 	EXPECT_EQ( "cGame", it->first);
+	EXPECT_EQ(Test_cFactory::createGame, it->second );
 	++it;
 	EXPECT_EQ("cInterpretCommand", it->first);
+	EXPECT_EQ(Test_cFactory::createInterpretCommand, it->second);
 	++it;
 	EXPECT_EQ("cSpaceShip", it->first);
+	EXPECT_EQ(Test_cFactory::createSpaceShip, it->second);
 
 	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 	return;
