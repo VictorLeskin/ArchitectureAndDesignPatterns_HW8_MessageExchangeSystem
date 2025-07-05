@@ -22,6 +22,7 @@
 
 extern void DBG(int t);
 extern void DBG1( void * method);
+extern void DBG2(const char *sz );
 
 class cIoCImpl;
 class cFactory;
@@ -165,6 +166,11 @@ protected:
         DBG1(method);
         using f = T * (*)(Args...);
         DBG(1);
+        auto my_tuple = std::make_tuple(std::forward<Args>(args)...);
+        DBG2(typeid(my_tuple).name());
+
+        return nullptr;
+
         return ((f)method)(args...);
         return nullptr;
         //return (*f(method))(args...);

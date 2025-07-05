@@ -140,6 +140,12 @@ void DBG1(void* method)
 {
 	EXPECT_EQ(qq, method );
 }
+
+void DBG2(const char *sz )
+{
+	EXPECT_EQ( std::string("aaa"), std::string(sz) );
+}
+
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 {
 	// create message broker.
