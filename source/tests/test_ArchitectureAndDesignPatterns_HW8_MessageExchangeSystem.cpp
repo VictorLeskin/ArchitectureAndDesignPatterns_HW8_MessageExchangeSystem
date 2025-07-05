@@ -80,7 +80,7 @@ public:
 		if (sd.game == nullptr && sd.msg == nullptr)
 			return nullptr;
 
-		return;
+		return nullptr;
 		cGame* game = sd.game;
 		const cMessage& msg = *sd.msg;
 
