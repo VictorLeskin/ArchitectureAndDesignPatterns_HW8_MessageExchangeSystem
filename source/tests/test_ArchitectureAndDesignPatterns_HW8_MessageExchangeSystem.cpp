@@ -153,7 +153,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	f1.Register( "cSpaceShip", Test_cFactory::createSpaceShip);
 	f1.Register("cInterpretCommand", Test_cFactory::createInterpretCommand);
 
-	qq = Test_cFactory::createInterpretCommand;
+	qq = (void*)(Test_cFactory::createInterpretCommand);
 
 	const cFactory& f11 = f1;
 
