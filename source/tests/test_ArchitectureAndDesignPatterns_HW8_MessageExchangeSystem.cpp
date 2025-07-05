@@ -1,6 +1,7 @@
 ///************************* OUTS HOMEWORK ****************************************
 
 #include <gtest/gtest.h>
+#include "fstream"
 
 #include "ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.hpp"
 #include "cMessage.hpp"
@@ -121,22 +122,31 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	Test_cFactory f1;
 	const cFactory& f11 = f1;
 
+	static std::ofstream strm("ABCD");
+
+	strm << __LINE__ << std::endl;
+
 	// registering 
 
 	// register factory ( only one scope )
 	IoC.Resolve<iCommand>("Register", "A", f11)->Execute();
+	strm << __LINE__ << std::endl;
 
 	// register two factory methods for game and spaceship
 	IoC.Resolve<iCommand>("Register", "A", "cGame", Test_cFactory::createGame)->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cSpaceShip", Test_cFactory::createSpaceShip)->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
+	strm << __LINE__ << std::endl;
 
 	// create games 
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
+	strm << __LINE__ << std::endl;
 
 	cSpaceShip* spaceShip1 = IoC.Resolve<cSpaceShip>("A", "cSpaceShip", std::string("SpaceShip #1"));
+	strm << __LINE__ << std::endl;
 
 	game1->Register(spaceShip1);
+	strm << __LINE__ << std::endl;
 
 	endPoint.Register(game1);
 	endPoint.set(IoC);
@@ -152,9 +162,15 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	cMessage m1 = cMessage::Create(moveTo);
 	broker.put(m1);
 
+	strm << __LINE__ << std::endl;
 	cMessage m;
 	while (true == broker.get(m))
+	{
+		strm << __LINE__ << std::endl;
 		endPoint.process(m);
+		strm << __LINE__ << std::endl;
+	}
+	strm << __LINE__ << std::endl;
 }
 
 
