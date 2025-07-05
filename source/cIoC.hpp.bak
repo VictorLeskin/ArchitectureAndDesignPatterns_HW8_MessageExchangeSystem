@@ -33,7 +33,7 @@ struct iRegisterFactory : public iCommand
 
     cIoCImpl* ioc;
     const std::string scope;
-    std::shared_ptr<cFactory> shptrFactory;
+    std::shared_ptr<cFactory> f;
 };
 
 struct iRegisterFactoryMethod : public iCommand
@@ -85,6 +85,7 @@ public:
     }
 
     int size() const { return int(factoryMethods.size()); }
+    const std::map<std::string, const void*>& FactoryMethods() const { return factoryMethods; }
 
 protected:
     // keeps the pointer as old plain pointers.
@@ -212,11 +213,11 @@ inline iCommand* cIoCImpl::doRegisterFactory(const std::string& scope, const cFa
 }
 
 
-inline iRegisterFactory::iRegisterFactory(cIoCImpl& ioc, const std::string& scope, const cFactory& f) : ioc(&ioc), scope(scope), shptrFactory(new cFactory(f)) {}
+inline iRegisterFactory::iRegisterFactory(cIoCImpl& ioc, const std::string& scope, const cFactory& f) : ioc(&ioc), scope(scope), f(new cFactory(f)) {}
 
 inline void iRegisterFactory::Execute()
 {
-    ioc->factories[scope] = *shptrFactory;
+    ioc->factories[scope] = *f;
 }
 
 inline void iRegisterFactoryMethod::Execute()
