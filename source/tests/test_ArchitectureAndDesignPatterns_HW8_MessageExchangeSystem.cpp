@@ -140,6 +140,7 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	sd.msg = nullptr;
 
 	EXPECT_EQ(1,IoC.factories.size());
+	EXPECT_TRUE(IoC.factories.find("A") != IoC.factories.end());
 
 	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 	return;
