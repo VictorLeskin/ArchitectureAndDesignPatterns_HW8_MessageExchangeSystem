@@ -20,6 +20,8 @@
 // void * is a factory method.
 // User should run Execute() to perform real registering
 
+extern void DBG(int t);
+
 class cIoCImpl;
 class cFactory;
 
@@ -157,8 +159,10 @@ protected:
     template< typename T, typename... Args>
     T* doResolve(const std::string s1, const std::string s2, Args... args)
     {
+        DBG(0);
         auto method = getMethod<T, Args... >(s1, s2);
         using f = T * (*)(Args...);
+        DBG(1);
         return (*f(method))(args...);
     }
 

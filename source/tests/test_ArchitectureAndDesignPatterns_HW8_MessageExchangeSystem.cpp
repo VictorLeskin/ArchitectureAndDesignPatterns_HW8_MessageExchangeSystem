@@ -74,8 +74,13 @@ public:
 
 	static cInterpretCommand* createInterpretCommand(const sInterpretCommandData &sd)
 	{ 
+		EXPECT_TRUE(nullptr == sd.game);
+		EXPECT_TRUE(nullptr == sd.msg);
+
 		if (sd.game == nullptr && sd.msg == nullptr)
 			return nullptr;
+
+		return;
 		cGame* game = sd.game;
 		const cMessage& msg = *sd.msg;
 
@@ -117,6 +122,17 @@ public:
 //}
 
 
+void DBG(int t)
+{
+	static int iEntry = 0;
+
+	if (iEntry == 0)
+		EXPECT_EQ(t, 0);
+	if (iEntry == 1)
+		EXPECT_EQ(t, 1);
+
+	iEntry++;
+}
 TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 {
 	// create message broker.
