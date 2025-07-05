@@ -68,6 +68,8 @@ public:
 
 	static cInterpretCommand* createInterpretCommand(const sInterpretCommandData &sd)
 	{ 
+		if (sd.game == nullptr && sd.msg == nullptr)
+			return nullptr;
 		cGame* game = sd.game;
 		const cMessage& msg = *sd.msg;
 
@@ -82,9 +84,6 @@ public:
 
 		return new cInterpretCommand(game, h.objId.id, h.operationId.id, std::shared_ptr<cOperationData>(p) );
 	}
-
-
-	static cVector* createInterpretCommandParameters() { return new cVector; }
 };
 
 
@@ -131,6 +130,16 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	IoC.Resolve<iCommand>("Register", "A", "cGame", Test_cFactory::createGame)->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cSpaceShip", Test_cFactory::createSpaceShip)->Execute();
 	IoC.Resolve<iCommand>("Register", "A", "cInterpretCommand", Test_cFactory::createInterpretCommand)->Execute();
+
+
+	sInterpretCommandData sd;
+	sd.game = nullptr;
+	sd.msg = nullptr;
+	cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
+
+	EXPECT_TRUE(nullptr == pcmd);
+
+	return;
 
 	// create games 
 	cGame* game1 = IoC.Resolve<cGame>("A", "cGame", std::string("Game #1"));
