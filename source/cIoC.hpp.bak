@@ -20,6 +20,10 @@
 // void * is a factory method.
 // User should run Execute() to perform real registering
 
+extern void DBG(int t);
+extern void DBG1( void * method);
+extern void DBG2(const char *sz );
+
 class cIoCImpl;
 class cFactory;
 
@@ -33,7 +37,7 @@ struct iRegisterFactory : public iCommand
 
     cIoCImpl* ioc;
     const std::string scope;
-    std::shared_ptr<cFactory> f;
+    std::shared_ptr<cFactory> shptrFactory;
 };
 
 struct iRegisterFactoryMethod : public iCommand
@@ -93,7 +97,7 @@ protected:
         factoryMethods[objName] = f;
     }
 
-protected:
+public:
     std::map<std::string, const void*> factoryMethods;
 };
 
@@ -137,7 +141,7 @@ protected:
         auto factoryIt = factories.find(scope);
         if (factoryIt == factories.end())
             throw cException("There isn't such factory.");
-        return reinterpret_cast<void*>(factoryIt->second.getFactoryMethod<T, Args...>(objName));
+        return reinterpret_cast<void*>(factoryIt->second->getFactoryMethod<T, Args...>(objName));
     }
 
     template< typename R, typename... Args>
@@ -157,9 +161,17 @@ protected:
     template< typename T, typename... Args>
     T* doResolve(const std::string s1, const std::string s2, Args... args)
     {
+        DBG(0);
         auto method = getMethod<T, Args... >(s1, s2);
+        DBG1(method);
         using f = T * (*)(Args...);
-        return (*f(method))(args...);
+        DBG(1);
+        auto my_tuple = std::make_tuple(std::forward<Args>(args)...);
+        //DBG2(typeid(my_tuple).name());
+           
+        return ((f)method)(args...);
+        return nullptr;
+        //return (*f(method))(args...);
     }
 
     template< typename T, typename... Args>
@@ -188,7 +200,7 @@ protected:
     }
 
 protected:
-    std::map<std::string, cFactory> factories;
+    std::map<std::string, std::shared_ptr<cFactory> > factories;
 };
 
 class cIoC : public cIoCImpl
@@ -212,11 +224,11 @@ inline iCommand* cIoCImpl::doRegisterFactory(const std::string& scope, const cFa
 }
 
 
-inline iRegisterFactory::iRegisterFactory(cIoCImpl& ioc, const std::string& scope, const cFactory& f) : ioc(&ioc), scope(scope), f(new cFactory(f)) {}
+inline iRegisterFactory::iRegisterFactory(cIoCImpl& ioc, const std::string& scope, const cFactory& f) : ioc(&ioc), scope(scope), shptrFactory(new cFactory(f)) {}
 
 inline void iRegisterFactory::Execute()
 {
-    ioc->factories[scope] = *f;
+    ioc->factories[scope] = shptrFactory;
 }
 
 inline void iRegisterFactoryMethod::Execute()
@@ -225,7 +237,7 @@ inline void iRegisterFactoryMethod::Execute()
         throw cException("There isn't such factory.");
 
     auto& m = ioc->factories[scope];
-    m.doRegister(objName, f);
+    m->doRegister(objName, f);
 }
 
 #endif //#ifndef CIOC_HPP

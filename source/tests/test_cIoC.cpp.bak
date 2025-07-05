@@ -186,7 +186,7 @@ TEST_F(test_cIoCImpl, test_doRegisterFactory)
     EXPECT_EQ(0, t.factories.size());
     res->Execute();
     EXPECT_EQ(1, t.factories.size());
-    auto fptr = t.factories["A"].getFactoryMethod<int, int, double>("int");
+    auto fptr = t.factories["A"]->getFactoryMethod<int, int, double>("int");
     EXPECT_EQ(&test_cFactory::Test_cFactory::GetInt, fptr);
 
     // wrong type for registrations
@@ -214,11 +214,11 @@ TEST_F(test_cIoCImpl, test_doRegisterFactoryMethod)
     t.doRegisterFactory("A", f1)->Execute();
 
     std::unique_ptr<iCommand> res(t.doRegisterFactoryMethod("A", "Test_cFactory", test_cFactory::Test_cFactory::Clone));
-    EXPECT_EQ(1, t.factories["A"].size());
+    EXPECT_EQ(1, t.factories["A"]->size());
     res->Execute();
-    EXPECT_EQ(2, t.factories["A"].size());
+    EXPECT_EQ(2, t.factories["A"]->size());
 
-    auto fptr = t.factories["A"].getFactoryMethod<test_cFactory::Test_cFactory>("Test_cFactory");
+    auto fptr = t.factories["A"]->getFactoryMethod<test_cFactory::Test_cFactory>("Test_cFactory");
     EXPECT_EQ((void*)&test_cFactory::Test_cFactory::Clone, (void*)fptr);
 
     // no such factory method
@@ -341,9 +341,9 @@ TEST_F(test_cIoCImpl, test_ssResolve)
     EXPECT_EQ(1, t.factories.size());
 
     std::unique_ptr<iCommand> res1(t.ssResolve<iCommand>(std::string("Register"), std::string("A"), "Test_cFactory", test_cFactory::Test_cFactory::Clone));
-    EXPECT_EQ(2, t.factories["A"].size());
+    EXPECT_EQ(2, t.factories["A"]->size());
     res1->Execute();
-    EXPECT_EQ(3, t.factories["A"].size());
+    EXPECT_EQ(3, t.factories["A"]->size());
 
 
     // no such factory method

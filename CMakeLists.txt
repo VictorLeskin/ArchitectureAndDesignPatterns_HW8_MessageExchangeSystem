@@ -58,23 +58,23 @@ add_executable(
   source/cStopCommand.hpp
 #add source file here
   source/tests/test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem.cpp
-  #source/tests/test_aMessageBroker.cpp
-  #source/tests/test_cMessage.cpp
-  #source/tests/test_cEndPoint.cpp
-  #source/tests/test_cIoC.cpp
-  #source/tests/test_cCommandsDeque.cpp
-  #source/tests/test_iCommand.cpp
-  #source/tests/test_cThreadSafeDeque.cpp
-  #source/tests/test_cMessagesDeque.cpp
-  #source/tests/test_cGame.cpp
-  #source/tests/test_cGameId.cpp
-  #source/tests/test_cObject.cpp
-  #source/tests/test_cJsonString.cpp
-  #source/tests/test_cInterpretCommand.cpp
-  #source/tests/test_cException.cpp
-  #source/tests/test_cExceptionsHandler.cpp
-  #source/tests/test_cSpaceShip.cpp
-  #source/tests/test_cStopCommand.cpp
+  source/tests/test_aMessageBroker.cpp
+  source/tests/test_cMessage.cpp
+  source/tests/test_cEndPoint.cpp
+  source/tests/test_cIoC.cpp
+  source/tests/test_cCommandsDeque.cpp
+  source/tests/test_iCommand.cpp
+  source/tests/test_cThreadSafeDeque.cpp
+  source/tests/test_cMessagesDeque.cpp
+  source/tests/test_cGame.cpp
+  source/tests/test_cGameId.cpp
+  source/tests/test_cObject.cpp
+  source/tests/test_cJsonString.cpp
+  source/tests/test_cInterpretCommand.cpp
+  source/tests/test_cException.cpp
+  source/tests/test_cExceptionsHandler.cpp
+  source/tests/test_cSpaceShip.cpp
+  source/tests/test_cStopCommand.cpp
 #add test file here
 )
 
