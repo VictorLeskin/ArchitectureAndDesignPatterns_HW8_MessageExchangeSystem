@@ -24,14 +24,16 @@ void cEndPoint::process(const cMessage& msg)
   sInterpretCommandData sd;
   // create command
   // push command to game's command deque
+  if (games.end() == games.find(h.gameId.id))
+  {
+      throw(cException("There is not such registered game"));
+  }
+
   sd.game = games[h.gameId.id];
   sd.msg = &msg;
 
   cInterpretCommand *pcmd =  ioc->Resolve<cInterpretCommand>("A", "cInterpretCommand", sd );
   std::shared_ptr<iCommand> cmd(pcmd);
   
-  if (sd.game == nullptr)
-    throw(cException("there is not such registered game"));
-  else
-    sd.game->push_back(cmd);
+  sd.game->push_back(cmd);
 }

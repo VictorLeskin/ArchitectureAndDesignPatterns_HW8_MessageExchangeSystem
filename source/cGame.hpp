@@ -37,14 +37,16 @@ public:
 		deque.push_back(p);
 	}
 	
-  void join()	{ t.join(); }
-	void detach()	{	t.detach(); }
+    void join()	{ t.join(); }
+	void detach() {	t.detach(); }
 	void play() { iPlay = true; }
 
 	const cObject* operator[](const std::string& s) const
 	{
 		return gameObjects.at(s);
 	}
+
+	const TThreadSafeDeque< std::shared_ptr<iCommand> >& Deque() const { return deque; }
 
 protected:
 
