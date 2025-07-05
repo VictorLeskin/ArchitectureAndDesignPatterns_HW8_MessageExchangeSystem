@@ -167,10 +167,8 @@ protected:
         using f = T * (*)(Args...);
         DBG(1);
         auto my_tuple = std::make_tuple(std::forward<Args>(args)...);
-        DBG2(typeid(my_tuple).name());
-
-        return nullptr;
-
+        //DBG2(typeid(my_tuple).name());
+           
         return ((f)method)(args...);
         return nullptr;
         //return (*f(method))(args...);
