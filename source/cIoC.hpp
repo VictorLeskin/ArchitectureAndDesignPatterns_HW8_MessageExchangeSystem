@@ -163,7 +163,8 @@ protected:
         auto method = getMethod<T, Args... >(s1, s2);
         using f = T * (*)(Args...);
         DBG(1);
-        return (*f(method))(args...);
+        return nullptr;
+        //return (*f(method))(args...);
     }
 
     template< typename T, typename... Args>
