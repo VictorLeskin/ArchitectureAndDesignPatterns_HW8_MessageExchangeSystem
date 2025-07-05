@@ -145,8 +145,13 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 
 	EXPECT_EQ(3, f->factoryMethods.size());
 	
-	//for( auto it = a.begin(); it != a.end(); ++it )
-
+	auto it = f->factoryMethods.begin(); 
+	
+	EXPECT_EQ( "cGame", it->first);
+	++it;
+	EXPECT_EQ("cInterpretCommand", it->first);
+	++it;
+	EXPECT_EQ("cSpaceShip", it->first);
 
 	//cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
 	return;
