@@ -172,7 +172,8 @@ TEST_F(test_ArchitectureAndDesignPatterns_HW8_MessageExchangeSystem, test_0 )
 	EXPECT_EQ("cSpaceShip", it->first);
 	EXPECT_EQ(Test_cFactory::createSpaceShip, it->second);
 
-	cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd);
+	sInterpretCommandData& sd1 = sd;
+	cInterpretCommand* pcmd = IoC.Resolve<cInterpretCommand>("A", "cInterpretCommand", sd1);
 	return;
 
 	// create games 
