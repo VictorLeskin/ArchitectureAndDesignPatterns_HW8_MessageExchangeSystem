@@ -137,7 +137,7 @@ protected:
         auto factoryIt = factories.find(scope);
         if (factoryIt == factories.end())
             throw cException("There isn't such factory.");
-        return reinterpret_cast<void*>(factoryIt->second.getFactoryMethod<T, Args...>(objName));
+        return reinterpret_cast<void*>(factoryIt->second->getFactoryMethod<T, Args...>(objName));
     }
 
     template< typename R, typename... Args>
@@ -188,7 +188,7 @@ protected:
     }
 
 protected:
-    std::map<std::string, cFactory> factories;
+    std::map<std::string, std::shared_ptr<cFactory> > factories;
 };
 
 class cIoC : public cIoCImpl
@@ -216,7 +216,7 @@ inline iRegisterFactory::iRegisterFactory(cIoCImpl& ioc, const std::string& scop
 
 inline void iRegisterFactory::Execute()
 {
-    ioc->factories[scope] = *shptrFactory;
+    ioc->factories[scope] = shptrFactory;
 }
 
 inline void iRegisterFactoryMethod::Execute()
@@ -225,7 +225,7 @@ inline void iRegisterFactoryMethod::Execute()
         throw cException("There isn't such factory.");
 
     auto& m = ioc->factories[scope];
-    m.doRegister(objName, f);
+    m->doRegister(objName, f);
 }
 
 #endif //#ifndef CIOC_HPP
